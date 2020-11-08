@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 import img from '../../assets/img.jpg';
 
-export const Container = styled.div<{ welcomeScreen?: boolean }>`
+interface ContainerProps {
+  welcomeScreen?: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
   display: flex;
   min-height: 100vh;
   flex-direction: column;

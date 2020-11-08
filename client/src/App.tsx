@@ -1,14 +1,17 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import WelcomeScreen from './screens/WelcomeScreen';
 
 const App = () => {
+  //TODO: create hook that will check if user is logged
+  // const profile = useProfile() || {}
+
   return (
-    <BrowserRouter>
+    <Router>
       <div className="App">
         <WelcomeScreen />
       </div>
-    </BrowserRouter>
+    </Router>
   );
 };
 
