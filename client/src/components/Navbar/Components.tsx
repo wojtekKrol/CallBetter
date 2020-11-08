@@ -12,7 +12,8 @@ export const Nav = styled.div<NavbarProps>`
   justify-content: space-between;
   align-items: center;
   background-color: ${({ welcomeScreen }) => (welcomeScreen ? 'transparent' : 'white')};
-  box-shadow: 0 4px 24px rgba(134, 98, 250, 0.25);
+  box-shadow: ${({ welcomeScreen }) =>
+    welcomeScreen ? 'none' : '0 4px 24px rgba(134, 98, 250, 0.25)'}; ;
 `;
 
 export const AuthButton = styled.div<NavbarProps>`
