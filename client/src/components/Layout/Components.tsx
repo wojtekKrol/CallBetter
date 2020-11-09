@@ -14,13 +14,12 @@ export const Container = styled.div<ContainerProps>`
   word-wrap: break-word;
 `;
 
-export const Overlay = styled.div`
+export const Overlay = styled.div<ContainerProps>`
   height: 100vh;
-  background: linear-gradient(
-    227.23deg,
-    rgba(158, 0, 255, 0.54) 4.03%,
-    rgba(112, 0, 255, 0.54) 91.25%
-  );
+  background: ${({ welcomeScreen }) =>
+    welcomeScreen
+      ? 'linear-gradient(\n    227.23deg,\n    rgba(158, 0, 255, 0.54) 4.03%,\n    rgba(112, 0, 255, 0.54) 91.25%\n  );'
+      : 'white'};
 `;
 
 export const ChildrenContainer = styled.div`

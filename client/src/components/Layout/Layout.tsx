@@ -10,7 +10,7 @@ interface LayoutProps {
 const Layout = ({ welcomeScreen, children }: LayoutProps) => {
   return (
     <Container welcomeScreen={welcomeScreen}>
-      <Overlay>
+      <Overlay welcomeScreen={welcomeScreen}>
         <Navbar welcomeScreen={welcomeScreen} />
         <ChildrenContainer>{children}</ChildrenContainer>
       </Overlay>
