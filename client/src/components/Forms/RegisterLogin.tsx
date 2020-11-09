@@ -44,7 +44,7 @@ const RegisterLoginForm = ({
   return (
     <>
       <StyledFormWrapper>
-        <Text>Register</Text>
+        <Text>{title}</Text>
         <StyledForm onSubmit={handleSubmit}>
           {emailInput}
           {passwordInput}

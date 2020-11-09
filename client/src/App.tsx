@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import WelcomeScreen from './screens/WelcomeScreen';
 import ROUTES from './constants/routes';
 import Register from './screens/Register';
+import Login from './screens/Login';
 
 const App = () => {
   //TODO: create hook that will check if user is logged
@@ -15,6 +16,7 @@ const App = () => {
       return (
         <Switch>
           <Route path={ROUTES.SIGN_UP} component={Register} />
+          <Route path={ROUTES.LOG_IN} component={Login} />
           <Route path={ROUTES.VIDEO_CALL} component={WelcomeScreen} />
           <Route path={ROUTES.HOME} component={WelcomeScreen} />
           <Route path={ROUTES.INDEX} component={WelcomeScreen} exact />
