@@ -11,7 +11,7 @@ const App = () => {
 
   const isUser = 'logged';
 
-  const HomeRedirect = () => <Route component={() => <Redirect to={ROUTES.HOME} />} />;
+  const HomeRedirect = () => <Route path="*" component={() => <Redirect to={ROUTES.HOME} />} />;
 
   switch (isUser) {
     case 'logged':
