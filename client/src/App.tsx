@@ -3,15 +3,12 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import WelcomeScreen from './screens/WelcomeScreen';
 import ROUTES from './constants/routes';
 import Register from './screens/Register';
-import Home from './screens/Register';
 
 const App = () => {
   //TODO: create hook that will check if user is logged
   // const profile = useProfile() || {}
 
   const isUser = 'logged';
-
-  const HomeRedirect = () => <Route path="*" component={() => <Redirect to={ROUTES.HOME} />} />;
 
   switch (isUser) {
     case 'logged':
@@ -20,8 +17,8 @@ const App = () => {
           <Route path={ROUTES.SIGN_UP} component={Register} />
           <Route path={ROUTES.VIDEO_CALL} component={WelcomeScreen} />
           <Route path={ROUTES.HOME} component={WelcomeScreen} />
-          <Route path={ROUTES.INDEX} component={Register} exact />
-          <Route path="*" component={HomeRedirect} />
+          <Route path={ROUTES.INDEX} component={WelcomeScreen} exact />
+          <Redirect to={ROUTES.HOME} />
         </Switch>
       );
     default:
@@ -30,8 +27,8 @@ const App = () => {
           <Route path={ROUTES.SIGN_UP} component={Register} />
           <Route path={ROUTES.LOG_IN} component={WelcomeScreen} />
           <Route path={ROUTES.HOME} component={WelcomeScreen} />
-          <Route path={ROUTES.INDEX} component={Home} exact />
-          <Route path="*" component={HomeRedirect} />
+          <Route path={ROUTES.INDEX} component={WelcomeScreen} exact />
+          <Redirect to={ROUTES.HOME} />
         </Switch>
       );
   }
