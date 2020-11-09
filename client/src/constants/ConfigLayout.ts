@@ -46,7 +46,7 @@ const mainNavConfig: Array<LayoutItem> = [
   },
   {
     label: 'Log out',
-    route: RouteTypes.INDEX,
+    route: RouteTypes.HOME,
     showFor: ForSessionState.AUTH
   }
 ];
