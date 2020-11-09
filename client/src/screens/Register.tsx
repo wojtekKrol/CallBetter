@@ -2,6 +2,8 @@ import React from 'react';
 import Layout from '../components/Layout/Layout';
 import { useInput } from '../lib/hooks';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import RouteTypes from '../constants/routes';
 
 const Register = () => {
   const [email, emailInput, resetEmail] = useInput({
@@ -27,14 +29,20 @@ const Register = () => {
   };
 
   return (
-    <Layout>
+    <Layout authForm>
       <StyledFormWrapper>
         <Text>Register</Text>
         <StyledForm onSubmit={handleSubmit}>
-          {emailInput} <br />
+          {emailInput}
           {passwordInput}
           <ButtonWraper>
             <RegisterButton type="submit">Register</RegisterButton>
+            <ChangeAuthAction>
+              Don't have account?
+              <Link style={{ textDecoration: 'none', marginLeft: 5 }} to={RouteTypes.LOG_IN}>
+                Create it!
+              </Link>
+            </ChangeAuthAction>
           </ButtonWraper>
         </StyledForm>
       </StyledFormWrapper>
@@ -46,7 +54,7 @@ export default Register;
 
 const StyledForm = styled.form`
   width: 100%;
-  max-width: 700px;
+  max-width: 500px;
   padding: 20px;
   box-sizing: border-box;
 `;
@@ -69,9 +77,26 @@ const Text = styled.div`
   margin: 100px 0;
 `;
 
+const ChangeAuthAction = styled.div`
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 100%;
+  display: flex;
+  align-items: flex-end;
+  color: #9983e0;
+  margin: 20px 0;
+
+  & > Link {
+    color: #8059fb;
+  }
+`;
+
 const ButtonWraper = styled.div`
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const RegisterButton = styled.button`
