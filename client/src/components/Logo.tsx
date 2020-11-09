@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import RouteTypes from '../constants/routes';
-import { Nav } from './Navbar/Components';
 
 const Logo = () => {
   return (

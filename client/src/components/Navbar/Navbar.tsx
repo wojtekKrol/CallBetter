@@ -2,8 +2,7 @@ import React from 'react';
 import { Nav, AuthButton } from './Components';
 import Logo from '../Logo';
 import { mainNavConfigUser, mainNavConfigAnonymous } from '../../constants/ConfigLayout';
-import { Link, useHistory } from 'react-router-dom';
-import RouteTypes from '../../constants/routes';
+import { useHistory } from 'react-router-dom';
 
 interface NavbarProps {
   welcomeScreen?: boolean;
