@@ -1,18 +1,39 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import WelcomeScreen from './screens/WelcomeScreen';
+import ROUTES from './constants/routes';
+import Register from './screens/Register';
+import Login from './screens/Login';
 
 const App = () => {
   //TODO: create hook that will check if user is logged
   // const profile = useProfile() || {}
 
-  return (
-    <Router>
-      <div className="App">
-        <WelcomeScreen />
-      </div>
-    </Router>
-  );
+  const isUser = 'logged';
+
+  switch (isUser) {
+    case 'logged':
+      return (
+        <Switch>
+          <Route path={ROUTES.SIGN_UP} component={Register} />
+          <Route path={ROUTES.LOG_IN} component={Login} />
+          <Route path={ROUTES.VIDEO_CALL} component={WelcomeScreen} />
+          <Route path={ROUTES.HOME} component={WelcomeScreen} />
+          <Route path={ROUTES.INDEX} component={WelcomeScreen} exact />
+          <Redirect to={ROUTES.HOME} />
+        </Switch>
+      );
+    default:
+      return (
+        <Switch>
+          <Route path={ROUTES.SIGN_UP} component={Register} />
+          <Route path={ROUTES.LOG_IN} component={WelcomeScreen} />
+          <Route path={ROUTES.HOME} component={WelcomeScreen} />
+          <Route path={ROUTES.INDEX} component={WelcomeScreen} exact />
+          <Redirect to={ROUTES.HOME} />
+        </Switch>
+      );
+  }
 };
 
 export default App;

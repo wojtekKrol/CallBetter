@@ -1,8 +1,9 @@
 export enum RouteTypes {
   INDEX = '/',
-  SIGN_UP = 'sign-up',
-  LOG_IN = 'log-in',
-  VIDEO_CALL = 'call/:callId'
+  HOME = '/home',
+  LOG_IN = '/log-in',
+  SIGN_UP = '/sign-up',
+  VIDEO_CALL = '/call/:callId'
 }
 
 export default RouteTypes;
