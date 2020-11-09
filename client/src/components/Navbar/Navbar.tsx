@@ -20,7 +20,10 @@ const Navbar = ({ welcomeScreen }: NavbarProps) => {
     <Nav welcomeScreen={welcomeScreen}>
       <Logo />
       {navigation.map((subpage) => (
-        <AuthButton welcomeScreen={subpage?.ws} onClick={() => history.push(subpage.route)}>
+        <AuthButton
+          key={subpage.route}
+          welcomeScreen={subpage?.ws}
+          onClick={() => history.push(subpage.route)}>
           {subpage.label}
         </AuthButton>
       ))}

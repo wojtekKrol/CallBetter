@@ -26,7 +26,6 @@ export const Overlay = styled.div`
 export const ChildrenContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
   margin: auto;
   width: 90%;
 `;

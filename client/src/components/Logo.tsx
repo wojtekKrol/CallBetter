@@ -26,8 +26,8 @@ const Logo = () => {
             x2="0.996323"
             y2="16.1296"
             gradientUnits="userSpaceOnUse">
-            <stop stop-color="#3F5EFB" />
-            <stop offset="1" stop-color="#FC466B" />
+            <stop stopColor="#3F5EFB" />
+            <stop offset="1" stopColor="#FC466B" />
           </linearGradient>
         </defs>
       </svg>
