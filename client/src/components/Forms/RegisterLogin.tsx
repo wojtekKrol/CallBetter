@@ -37,7 +37,6 @@ const RegisterLoginForm = ({
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(email, password);
     resetForm();
   };
 
@@ -65,20 +64,20 @@ const RegisterLoginForm = ({
 
 export default RegisterLoginForm;
 
-const StyledForm = styled.form`
+export const StyledForm = styled.form`
   width: 100%;
   max-width: 500px;
   padding: 20px;
   box-sizing: border-box;
 `;
 
-const StyledFormWrapper = styled.div`
+export const StyledFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const Text = styled.div`
+export const Text = styled.div`
   font-family: Montserrat, sans-serif;
   font-style: normal;
   font-weight: 300;
@@ -90,7 +89,7 @@ const Text = styled.div`
   margin: 100px 0;
 `;
 
-const ChangeAuthAction = styled.div`
+export const ChangeAuthAction = styled.div`
   font-family: Montserrat, sans-serif;
   font-style: normal;
   font-weight: 300;
@@ -106,13 +105,13 @@ const ChangeAuthAction = styled.div`
   }
 `;
 
-const ButtonWraper = styled.div`
+export const ButtonWraper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const RegisterButton = styled.button`
+export const RegisterButton = styled.button`
   width: 140px;
   height: 50px;
   background: linear-gradient(83.55deg, #808cff 3.55%, #b276ff 97.88%);
