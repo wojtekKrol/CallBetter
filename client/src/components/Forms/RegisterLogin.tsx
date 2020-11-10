@@ -19,11 +19,13 @@ const RegisterLoginForm = ({
 }: RegisterLoginFormProps) => {
   const { question, action } = changeAuthAction;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [email, emailInput, resetEmail] = useInput({
     type: 'email',
     label: 'Email',
     name: 'email'
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [password, passwordInput, resetPassword] = useInput({
     type: 'password',
     label: 'Password',

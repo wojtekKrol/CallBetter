@@ -23,6 +23,10 @@ const CreateProfileForm = () => {
   const [gender, setGender] = useState<string>('');
 
   const handleChange = (e: any) => {
+    console.log(name);
+    console.log(about);
+    console.log(birthday);
+    console.log(gender);
     setGender(e.target.value);
   };
 
