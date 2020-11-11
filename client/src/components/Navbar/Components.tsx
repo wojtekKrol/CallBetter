@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 interface NavbarProps {
   welcomeScreen?: boolean;
+  logOut?: boolean;
 }
 
 export const Nav = styled.div<NavbarProps>`
@@ -17,13 +18,16 @@ export const Nav = styled.div<NavbarProps>`
 `;
 
 export const AuthButton = styled.div<NavbarProps>`
-  width: 120px;
-  height: 40px;
-  background: ${({ welcomeScreen }) =>
-    welcomeScreen
-      ? '#ffffff'
-      : 'linear-gradient(83.55deg, rgba(134, 98, 250, 0.55) 12.89%, #8662FA 97.88%);'};
+  width: 140px;
+  height: 50px;
+  background: linear-gradient(83.55deg, #808cff 3.55%, #b276ff 97.88%);
+  box-shadow: 0 3px 6px -2px #beb4ff;
   border-radius: 8px;
+  border: 0;
+  font-weight: 700;
+  background: ${({ welcomeScreen }) =>
+    welcomeScreen ? '#ffffff' : 'linear-gradient(83.55deg, #808cff 3.55%, #b276ff 97.88%)'};
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,9 +36,13 @@ export const AuthButton = styled.div<NavbarProps>`
 
   &:hover {
     cursor: pointer;
-    border: solid white;
-    color: white;
+    border: ${({ logOut }) => (logOut ? 'solid #8662FA' : 'solid #ffffff')};
+    color: ${({ logOut }) => (logOut ? '#5e27d1' : '#ffffff')};
     background: transparent;
     transition: all 0.2s ease-in-out;
+  }
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 40px;
   }
 `;

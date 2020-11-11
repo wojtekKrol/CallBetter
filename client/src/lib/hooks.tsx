@@ -72,6 +72,7 @@ export const StyledInput = styled.input`
 
 export const StyledTextArea = styled.textarea`
   max-width: 100%;
+  min-width: 100%;
   min-height: 100px;
   max-height: 300px;
   ${sharedStyles}
