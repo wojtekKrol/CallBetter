@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import RouteTypes from '../constants/routes';
+import RouteTypes from '../../constants/routes';
 
 const Logo = () => {
   return (

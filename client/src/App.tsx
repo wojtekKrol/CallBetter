@@ -6,6 +6,7 @@ import Register from './screens/Register';
 import Login from './screens/Login';
 import CreateProfile from './screens/CreateProfile';
 import Home from './screens/Home';
+import VideoCall from './screens/VideoCall';
 
 const App = () => {
   //TODO: create hook that will check if user is logged
@@ -20,7 +21,7 @@ const App = () => {
           <Route path={ROUTES.SIGN_UP} component={Register} />
           <Route path={ROUTES.LOG_IN} component={Login} />
           <Route path={ROUTES.CREATE_PROFILE} component={CreateProfile} />
-          <Route path={ROUTES.VIDEO_CALL} component={WelcomeScreen} />
+          <Route path={ROUTES.VIDEO_CALL} component={VideoCall} />
           <Route path={ROUTES.HOME} component={Home} />
           <Route path={ROUTES.INDEX} component={WelcomeScreen} exact />
           <Redirect to={ROUTES.HOME} />

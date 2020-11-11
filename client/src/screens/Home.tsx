@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '../components/Layout/Layout';
 import styled from 'styled-components';
 import './styles/home.css';
-import InfoIcon from '../components/InfoIcon';
+import InfoIcon from '../components/SVG/InfoIcon';
 import { Link } from 'react-router-dom';
 const Home = () => {
   return (
