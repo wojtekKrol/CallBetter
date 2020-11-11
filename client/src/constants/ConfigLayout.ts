@@ -1,6 +1,6 @@
 import RouteTypes from './routes';
 
-enum ForSessionState {
+export enum ForSessionState {
   NO_AUTH = -1,
   AUTH = 0,
   ALL
