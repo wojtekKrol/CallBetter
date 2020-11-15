@@ -1,6 +1,6 @@
 import React from 'react';
 import { Nav, AuthButton } from './Components';
-import Logo from '../Logo';
+import Logo from '../SVG/Logo';
 import {
   mainNavConfigUser,
   mainNavConfigAnonymous,

@@ -23,8 +23,7 @@ export const Overlay = styled.div<ContainerProps>`
 `;
 
 export const ChildrenContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  flex-grow: 1;
   margin: 50px auto;
   width: 90%;
 `;
