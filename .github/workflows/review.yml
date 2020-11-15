@@ -4,7 +4,7 @@ on: [pull_request]
 jobs:
   eslint:
     name: test / eslint
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Setup Node.js environment
@@ -20,7 +20,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install packages
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install
+        run: yarn install --frozen-lockfile
       - name: eslint
         uses: reviewdog/action-eslint@v1
         with:
