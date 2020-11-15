@@ -1,0 +1,31 @@
+# This is a basic workflow to help you get started with Actions
+name: Lint Review
+on: [pull_request]
+jobs:
+  eslint:
+    name: test / eslint
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1.4.2
+        with:
+          node-version: 10.x
+      - name: Cache modules
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+      - name: Install packages
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install
+      - name: eslint
+        uses: reviewdog/action-eslint@v1
+        with:
+          reporter: github-pr-check
+          fail_on_error: true
+          eslint_flags: '.'
+      - name: Typecheck
+        uses: andoshin11/typescript-error-reporter-action@v1.0.2
