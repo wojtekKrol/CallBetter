@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "start:client": "yarn workspace client run start",
-    "start:server": "yarn workspace server run start",
+    "start:server": "yarn workspace server run devStart",
     "lint": "eslint --fix .",
     "fix": "./scripts/lint.sh --fix"
   },
