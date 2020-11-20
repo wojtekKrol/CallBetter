@@ -5,6 +5,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 
 import { DATABASE } from './config';
+import userRouter from './userRouter';
 
 // eslint-disable-next-line no-void
 void mongoose.connect(DATABASE.MONGO_URI, {
@@ -14,9 +15,7 @@ void mongoose.connect(DATABASE.MONGO_URI, {
   useUnifiedTopology: true,
 });
 mongoose.connection.on('error', console.error);
-mongoose.connection.once('open', () =>
-  console.log(chalk.cyan('MongoDB connected')),
-);
+mongoose.connection.once('open', () => console.log(chalk.cyan('MongoDB connected')));
 
 const app = express();
 
@@ -28,3 +27,6 @@ app.use(express.json());
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+//set up routes
+app.use('/users', userRouter);
