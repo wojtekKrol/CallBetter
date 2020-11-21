@@ -14,17 +14,19 @@ void mongoose.connect(DATABASE.MONGO_URI, {
   useUnifiedTopology: true,
 });
 mongoose.connection.on('error', console.error);
-mongoose.connection.once('open', () =>
-  console.log(chalk.cyan('MongoDB connected')),
-);
+mongoose.connection.once('open', () => console.log(chalk.cyan('MongoDB connected')));
 
+const PORT = process.env.PORT || 5000;
+const HOST = '0.0.0.0';
 const app = express();
-
-const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.get('/elo', (req, res) => {
+  res.send('Hello World');
+});
+
+app.listen(<number>PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`);
 });
