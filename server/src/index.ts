@@ -14,7 +14,9 @@ void mongoose.connect(DATABASE.MONGO_URI, {
   useUnifiedTopology: true,
 });
 mongoose.connection.on('error', console.error);
-mongoose.connection.once('open', () => console.log(chalk.cyan('MongoDB connected')));
+mongoose.connection.once('open', () =>
+  console.log(chalk.cyan('MongoDB connected')),
+);
 
 const PORT = process.env.PORT || 5000;
 const HOST = '0.0.0.0';
