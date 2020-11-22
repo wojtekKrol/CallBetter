@@ -6,8 +6,8 @@ WORKDIR ./app
 COPY package.json yarn.lock  tsconfig.json  ./
 COPY server ./server
 
-RUN yarn install
-RUN yarn build:server
+RUN yarn install --pure-lockfile --non-interactive --cache-folder ./ycache; rm -rf ./ycache
+RUN yarn workspace server build
 
 FROM node:$NODE
 WORKDIR ./app
