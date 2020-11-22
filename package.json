@@ -10,8 +10,10 @@
   "author": "Wojtek <wojciechkrol97@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start:client": "yarn workspace client run start",
-    "start:server": "yarn workspace server run devStart",
+    "start:client": "yarn workspace client start",
+    "start:server": "yarn workspace server devStart",
+    "build:client": "yarn workspace client build",
+    "build:server": "yarn workspace server build",
     "lint": "eslint --fix .",
     "fix": "./scripts/lint.sh --fix"
   },
