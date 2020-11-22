@@ -18,6 +18,8 @@ mongoose.connection.once('open', () => console.log('MongoDB connected'));
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+console.log(DATABASE);
+console.log(DATABASE.MONGO_URI);
 app.use(cors());
 app.use(express.json());
 
