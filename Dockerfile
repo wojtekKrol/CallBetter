@@ -11,8 +11,7 @@ RUN yarn workspace server build
 
 FROM node:$NODE
 WORKDIR ./app
-ENV NODE_ENV=production
-EXPOSE 8080
+EXPOSE 5000
 COPY --from=nodeDeps ./app/server/build .
 COPY --from=nodeDeps ./app/node_modules /node_modules
-CMD ["node", "index.js"]
+CMD ["node", "index.js", "--host", "0.0.0.0"]
