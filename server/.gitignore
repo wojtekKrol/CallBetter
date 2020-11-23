@@ -4,5 +4,4 @@ build
 ../.env
 yarn-error.log
 yarn-debug.log
-build
 

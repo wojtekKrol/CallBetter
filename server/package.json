@@ -9,14 +9,15 @@
   "license": "MIT",
   "devDependencies": {
     "@types/cors": "^2.8.8",
-    "@types/express": "^4.17.9",
     "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.9",
     "@types/mongoose": "^5.10.1",
     "@types/node": "^14.14.9",
     "@zeit/ncc": "^0.22.3",
     "ts-node": "^9.0.0"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -26,7 +27,7 @@
     "nodemon": "^2.0.6"
   },
   "scripts": {
-    "devStart": "nodemon --watch 'src/**/*.ttss' --exec 'ts-node' src/index.ts",
+    "devStart": "ts-node-dev src/index.ts",
     "config": "ts-node ./set-env.ts",
     "start": "node build/index.js",
     "build": "concurrently  'tsc --build' 'yarn run config'"
