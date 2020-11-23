@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
 import cors from 'cors';
+import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 
 import { DATABASE } from './config';
 
+dotenv.config();
 // eslint-disable-next-line no-void
 void mongoose.connect(DATABASE.MONGO_URI, {
   useNewUrlParser: true,
@@ -19,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 console.log(DATABASE);
-console.log(DATABASE.MONGO_URI);
+console.log(process.env.MONGO_PASSWORD);
 app.use(cors());
 app.use(express.json());
 
