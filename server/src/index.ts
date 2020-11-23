@@ -33,3 +33,8 @@ app.use(express.json());
 app.listen(<number>PORT, () => {
   console.log(chalk.blue.bold(`Server is running on http://localhost:${PORT}`));
 });
+
+// doesn't need since docker image have tini package manager
+// process.on('SIGTERM', (): void => {
+//   process.exit();
+// });

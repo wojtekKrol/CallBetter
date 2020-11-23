@@ -18,3 +18,4 @@ EXPOSE 5000
 COPY --from=nodeDeps ./app/server/build .
 COPY --from=nodeDeps ./app/node_modules ./node_modules
 CMD ["tini", "node", "index.js"]
+
