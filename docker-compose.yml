@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  server:
+    env_file: server/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - "5000:8080"
+
