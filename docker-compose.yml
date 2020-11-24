@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - "5000:5000"
+    networks:
+      local:
+    environment:
+      MONGO_URI: "mongodb://mongo:27017/callbetterDB"
+  mongo:
+    image: mongo
+    volumes:
+      - db:/data/db
+    networks:
+      local:
+        aliases:
+          - mongo
+
+
+networks:
+  local:
+
+volumes:
+  db:
