@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 
-import userRouter from './userRouter';
+import usersRouter from './routes/userRouter';
 
 dotenv.config();
 
@@ -42,4 +42,4 @@ app.listen(<number>PORT, () => {
 // });
 
 //set up routes
-app.use('/', userRouter);
+app.use('/user', usersRouter);
