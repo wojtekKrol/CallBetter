@@ -30,7 +30,7 @@ export interface UserLoginQuery {
 
 export interface UserLoginResponse extends ResponseJson {
   token?: string;
-  user?: Record<string, unknown>;
+  user?: { id: string; email: string; name: string };
 }
 
 export interface ResponseJson {

@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import mongooseHidden from 'mongoose-hidden';
-import { UserProps } from 'user';
+
+import { UserProps } from '../types/user';
 
 const userSchema = new Schema(
   {

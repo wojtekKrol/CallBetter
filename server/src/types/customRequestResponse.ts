@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 // @ts-ignore
 export interface CustomRequestWithQuery<T> extends Request {
