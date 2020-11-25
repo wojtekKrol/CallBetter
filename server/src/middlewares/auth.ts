@@ -1,6 +1,7 @@
 import { Response, NextFunction, Request } from 'express';
 import jwt from 'jsonwebtoken';
 
+// eslint-disable-next-line consistent-return,@typescript-eslint/explicit-module-boundary-types
 const auth = (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.header('x-auth-token');
