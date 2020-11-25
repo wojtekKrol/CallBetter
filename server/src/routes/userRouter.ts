@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-misused-promises,consistent-return */
 /* eslint-disable-next-line consistent-return */
 import bcrypt from 'bcrypt';
-import express, { Response, Router } from 'express';
+import express, { Response, Router, Request } from 'express';
 import jwt from 'jsonwebtoken';
 
+import auth from '../middlewares/auth';
 import User from '../models/user';
 import { CustomRequestWithQuery } from '../types/customRequestResponse';
 import { UserAuth, UserLoginQuery } from '../types/user';
@@ -99,5 +100,43 @@ router.post(
     }
   },
 );
+
+router.delete('/delete', auth, async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const deletedUser = await User.findByIdAndDelete(req.user);
+    res.json(deletedUser);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/tokenisvalid', async (req: Request, res: Response) => {
+  try {
+    const token = req.header('x-auth-token');
+
+    if (!token) {
+      return res.json(false);
+    }
+
+    const { JWT_SECRET } = process.env;
+    // @ts-ignore
+    const verified = jwt.verify(token, JWT_SECRET);
+
+    if (!verified) {
+      return res.json(false);
+    }
+    // @ts-ignore
+    const user = await User.findById(verified.id);
+
+    if (!user) {
+      return res.json(false);
+    }
+
+    return res.json(true);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;

@@ -12,7 +12,6 @@ dotenv.config();
 
 const { MONGO_URI } = process.env;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 void mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
@@ -42,4 +41,4 @@ app.listen(<number>PORT, () => {
 // });
 
 //set up routes
-app.use('/user', usersRouter);
+app.use('/users', usersRouter);
