@@ -8,3 +8,9 @@ rules:
   react/prop-types: 0
   valid-jsdoc: 0
   'vazco/no-console': 0
+overrides:
+  - files:
+      - "*.ts"
+    rules:
+      '@typescript-eslint/no-unsafe-member-access': 'off'
+      '@typescript-eslint/no-unsafe-assignment': 'off'

@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 
+import usersRouter from './routes/userRouter';
+
 dotenv.config();
 
 const { MONGO_URI } = process.env;
@@ -38,3 +40,6 @@ app.listen(<number>PORT, () => {
 // process.on('SIGTERM', (): void => {
 //   process.exit();
 // });
+
+//set up routes
+app.use('/user', usersRouter);

@@ -6,7 +6,7 @@ const targetPath = './build/.env';
 dotenv.config();
 
 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-const envConfig = `MONGO_PASSWORD=${process.env.MONGO_PASSWORD}`;
+const envConfig = `MONGO_URI=${process.env.MONGO_URI}`;
 
 writeFile(targetPath, envConfig, (err: any) => {
   if (err) {

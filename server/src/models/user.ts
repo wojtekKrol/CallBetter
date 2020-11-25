@@ -1,32 +1,35 @@
 import mongoose, { Schema } from 'mongoose';
 import mongooseHidden from 'mongoose-hidden';
 
+import { UserProps } from '../types/user';
+
 const userSchema = new Schema(
   {
+    email: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      hide: true,
+    },
+    passwordCheck: {
+      type: String,
+      hide: true,
+    },
     name: {
       type: String,
-      required: true,
     },
     gender: {
       type: String,
-      required: true,
     },
     birthday: {
       type: Date,
-      required: true,
     },
     about: {
       type: String,
       maxlength: 256,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      hide: true,
     },
   },
   {
@@ -36,4 +39,4 @@ const userSchema = new Schema(
 
 userSchema.set('toJSON', { getters: true, virtuals: true });
 userSchema.plugin(mongooseHidden());
-export default mongoose.model('User', userSchema);
+export default mongoose.model<UserProps>('User', userSchema);
