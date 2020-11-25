@@ -29,12 +29,16 @@ yarn install
 ```
 yarn start:server
 ```
+
+<img src="https://i.imgur.com/G8JM1ye.png" alt="Server" title="Callbetter:Server" align="center" />
+
 <b>Client:</b> 
 ```
 yarn start:client
 ```
 
-### Or run server in docker-compose
+### Or run server in docker-compose :whale::package:
+
 ```
 docker-compose up --build
 ```
