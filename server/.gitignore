@@ -1,6 +1,5 @@
 node_modules
 build
-.env
 ../.env
 yarn-error.log
 yarn-debug.log
