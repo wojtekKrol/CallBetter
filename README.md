@@ -1,4 +1,4 @@
-<a href="https://callbetter.netlify.app/" target="_blank">
+<a href="https://krolwojciech.pl/" target="_blank">
     <img src="https://i.imgur.com/t3I17If.jpg" alt="Callbetter logo" title="Callbetter" align="right" height="60px" />
 </a>
 
