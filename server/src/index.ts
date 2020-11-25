@@ -20,10 +20,9 @@ void mongoose.connect(MONGO_URI, {
   useCreateIndex: true,
   useUnifiedTopology: true,
 });
-
 mongoose.connection.on('error', console.error);
 mongoose.connection.once('open', () =>
-  console.log(chalk.yellow.bold('MongoDB connected')),
+  console.log(chalk.yellow.bold('MongoDB connected 🚀')),
 );
 
 const PORT = process.env.PORT || 5000;
@@ -33,7 +32,9 @@ app.use(cors());
 app.use(express.json());
 
 app.listen(<number>PORT, () => {
-  console.log(chalk.blue.bold(`Server is running on http://localhost:${PORT}`));
+  console.log(
+    chalk.blue.bold(`Server is running on http://localhost:${PORT} 🔥`),
+  );
 });
 
 // doesn't need since docker image have tini package manager
