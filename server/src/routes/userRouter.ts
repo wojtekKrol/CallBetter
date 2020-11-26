@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-misused-promises,consistent-return */
 /* eslint-disable-next-line consistent-return */
 import bcrypt from 'bcrypt';
-import express, { Response, Router } from 'express';
+import express, { Response, Router, Request } from 'express';
 import jwt from 'jsonwebtoken';
 
+import auth from '../middlewares/auth';
 import User from '../models/user';
 import { CustomRequestWithQuery } from '../types/customRequestResponse';
 import { UserAuth, UserLoginQuery } from '../types/user';
@@ -54,7 +55,7 @@ router.post(
       const savedUser = await newUser.save();
       return res.json(savedUser);
     } catch (err: any) {
-      return res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
   },
 );
@@ -79,7 +80,7 @@ router.post(
         });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(password, user?.password);
 
       if (!isMatch) {
         return res.status(400).json({ msg: 'Invalid credentials.' });
@@ -88,16 +89,88 @@ router.post(
       const token = jwt.sign({ id: user._id }, <string>process.env.JWT_SECRET);
       return res.json({
         token,
-        user: {
+        userData: {
           id: user._id,
-          name: user.name,
-          email: user.email,
         },
+        logged: true,
       });
     } catch (err) {
-      return res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
   },
 );
+
+router.delete('/delete', auth, async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const deletedUser = await User.findByIdAndDelete(req.user);
+    res.json(deletedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/tokenIsValid', async (req: Request, res: Response) => {
+  try {
+    const token = req.header('x-auth-token');
+    if (!token) {
+      return res.json(false);
+    }
+
+    const { JWT_SECRET } = process.env;
+    // @ts-ignore
+    const verified = jwt.verify(token, JWT_SECRET);
+
+    if (!verified) {
+      return res.json(false);
+    }
+    // @ts-ignore
+    const user = await User.findById(verified.id);
+
+    if (!user) {
+      return res.json(false);
+    }
+
+    return res.json(true);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/', auth, async (req: any, res: any) => {
+  const user = await User.findById(req.user);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  res.json(user);
+});
+
+router.post('/createProfile', auth, async (req: any, res: any) => {
+  try {
+    const { name, gender, birthday, about } = req.body;
+
+    if (!name || !gender || !birthday || !about) {
+      return res.status(400).json({ msg: 'Not all fields have been entered.' });
+    }
+    if (about.length > 256) {
+      return res
+        .status(400)
+        .json({ msg: 'About must be shorter than 256 chars' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      // @ts-ignore
+      req.user,
+      {
+        name,
+        gender,
+        birthday,
+        about,
+      },
+      { new: true },
+    );
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;

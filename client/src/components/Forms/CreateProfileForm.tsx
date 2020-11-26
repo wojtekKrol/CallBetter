@@ -1,45 +1,61 @@
-import React, { useState } from 'react';
-
-import { ButtonWraper, RegisterButton, StyledForm, StyledFormWrapper, Text } from './RegisterLogin';
-import { useInput, useTextArea } from '../../lib/hooks';
+import Axios from 'axios';
+import React, { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { SERVER_URL } from '../../constants/server';
+import UserContext from '../../lib/UserContext';
+import { useInput, useTextArea } from '../../lib/hooks';
+import {
+  ButtonWraper,
+  RegisterButton,
+  StyledForm,
+  StyledFormWrapper,
+  Text,
+} from './RegisterLogin';
+
 const CreateProfileForm = () => {
-  const [name, nameInput, resetName] = useInput({
+  const user = useContext(UserContext);
+  const history = useHistory();
+
+  const [name, nameInput] = useInput({
     type: 'text',
     label: 'Name',
-    name: 'name'
+    name: 'name',
   });
-  const [birthday, birthdayInput, resetBirthday] = useInput({
+  const [birthday, birthdayInput] = useInput({
     type: 'date',
     label: 'MM/DD/YYYY',
-    name: 'birthday'
+    name: 'birthday',
   });
-  const [about, aboutInput, resetAbout] = useTextArea({
+  const [about, aboutInput] = useTextArea({
     label: 'About',
-    name: 'about'
+    name: 'about',
   });
-
   const [gender, setGender] = useState<string>('');
-
   const handleChange = (e: any) => {
-    console.log(name);
-    console.log(about);
-    console.log(birthday);
-    console.log(gender);
     setGender(e.target.value);
   };
 
-  const resetForm = () => {
-    resetName('');
-    setGender('');
-    resetBirthday('');
-    resetAbout('');
-  };
-
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    resetForm();
+    const token = localStorage.getItem('auth-token');
+    const updateProfile = { name, birthday, gender, about };
+    const updatedUser = await Axios.post(
+      `${SERVER_URL}users/createProfile`,
+      updateProfile,
+      {
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    user?.setUser((prevState: any) => ({
+      ...prevState,
+      userData: { ...prevState.userData, ...updatedUser.data },
+    }));
+    history.push('/home');
   };
 
   return (

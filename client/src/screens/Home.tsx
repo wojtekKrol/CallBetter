@@ -1,9 +1,12 @@
 import React from 'react';
-import Layout from '../components/Layout/Layout';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+import Layout from '../components/Layout/Layout';
 import './styles/home.css';
 import InfoIcon from '../components/SVG/InfoIcon';
-import { Link } from 'react-router-dom';
+import ROUTES from '../constants/routes';
+
 const Home = () => {
   return (
     <Layout>
@@ -43,7 +46,10 @@ const CameraPreview = () => {
   return (
     <div className="videoWrapper">
       <div className="videoButtonWrapper">
-        <button className="videoCreateRoom">Create room</button>
+        {' '}
+        <Link to={ROUTES.VIDEO_CALL} className="videoCreateRoom">
+          Create room
+        </Link>
       </div>
     </div>
   );
@@ -67,7 +73,7 @@ const HitoryPreview = () => {
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' }
+    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
   ];
 
   return (

@@ -1,12 +1,16 @@
-import React from 'react';
-import { Nav, AuthButton } from './Components';
-import Logo from '../SVG/Logo';
+import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import {
   mainNavConfigUser,
   mainNavConfigAnonymous,
-  ForSessionState
+  ForSessionState,
+  LayoutItem,
 } from '../../constants/ConfigLayout';
-import { useHistory } from 'react-router-dom';
+import RouteTypes from '../../constants/routes';
+import UserContext from '../../lib/UserContext';
+import Logo from '../SVG/Logo';
+import { Nav, AuthButton } from './Components';
 
 interface NavbarProps {
   welcomeScreen?: boolean;
@@ -15,22 +19,32 @@ interface NavbarProps {
 
 const Navbar = ({ welcomeScreen, authForm }: NavbarProps) => {
   const history = useHistory();
-  //TODO: create hook that will check if user is logged
-  // const profile = useProfile() || {}
-  const profile = true;
+  const user = useContext(UserContext);
 
-  const navigation = profile ? mainNavConfigUser : mainNavConfigAnonymous;
+  const navigation: LayoutItem[] = user?.user?.logged
+    ? mainNavConfigUser
+    : mainNavConfigAnonymous;
+
+  const handleClick = (route: string) => {
+    if (route === RouteTypes.INDEX) {
+      localStorage.setItem('auth-token', '');
+      user.setUser({ logged: false, userDate: undefined, token: '' });
+      history.push(route);
+    } else {
+      history.push(route);
+    }
+  };
 
   return (
     <Nav welcomeScreen={welcomeScreen}>
       <Logo />
       {!authForm &&
-        navigation.map((subpage) => (
+        navigation.map((subpage: LayoutItem) => (
           <AuthButton
             key={subpage.route}
             welcomeScreen={subpage?.ws}
             logOut={subpage.showFor === ForSessionState.AUTH}
-            onClick={() => history.push(subpage.route)}>
+            onClick={() => handleClick(subpage.route)}>
             {subpage.label}
           </AuthButton>
         ))}

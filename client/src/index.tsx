@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
 import './index.css';
 import { Router } from 'react-router-dom';
+
 import { history } from './lib/actions';
 
 ReactDOM.render(
@@ -12,7 +15,7 @@ ReactDOM.render(
       <App />
     </Router>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function

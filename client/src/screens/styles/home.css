@@ -108,6 +108,7 @@
     text-align: center;
     justify-content: center;
     color: #FFFFFF;
+    text-decoration: none;
 }
 
 .videoCreateRoom:hover {

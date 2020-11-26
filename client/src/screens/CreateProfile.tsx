@@ -1,6 +1,7 @@
 import React from 'react';
-import Layout from '../components/Layout/Layout';
+
 import CreateProfileForm from '../components/Forms/CreateProfileForm';
+import Layout from '../components/Layout/Layout';
 
 const CreateProfile = () => {
   return (
