@@ -1,59 +1,115 @@
-import React from 'react';
+import Axios from 'axios';
+import React, { useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { useInput } from '../../lib/hooks';
+
 import RouteTypes from '../../constants/routes';
+import { SERVER_URL } from '../../constants/server';
+import UserContext from '../../lib/UserContext';
+import { useInput } from '../../lib/hooks';
 
 interface RegisterLoginFormProps {
-  onSubmit?: () => void;
   title: string;
   changeAuthAction: { question: string; action: string };
   route: RouteTypes.LOG_IN | RouteTypes.SIGN_UP;
+  register?: boolean;
 }
 
 const RegisterLoginForm = ({
-  onSubmit,
   title,
   changeAuthAction,
-  route
+  route,
+  register,
 }: RegisterLoginFormProps) => {
   const { question, action } = changeAuthAction;
+  const user = useContext(UserContext);
+  const history = useHistory();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [email, emailInput, resetEmail] = useInput({
+  const [email, emailInput] = useInput({
     type: 'email',
     label: 'Email',
-    name: 'email'
+    name: 'email',
   });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [password, passwordInput, resetPassword] = useInput({
+  const [password, passwordInput] = useInput({
     type: 'password',
     label: 'Password',
-    name: 'password'
+    name: 'password',
+  });
+  const [passwordCheck, passwordCheckInput] = useInput({
+    type: 'password',
+    label: 'Verify password',
+    name: 'passwordCheck',
   });
 
-  const resetForm = () => {
-    resetEmail('');
-    resetPassword('');
-  };
-
-  const handleSubmit = (e: any) => {
+  const handleRegister = async (e: any) => {
     e.preventDefault();
-    resetForm();
+    const newUser = { email, password, passwordCheck };
+    await Axios.post(`${SERVER_URL}users/sign-up`, newUser);
+
+    const loginRes = await Axios.post(`${SERVER_URL}users/login`, {
+      email,
+      password,
+    });
+
+    user?.setUser({
+      token: loginRes.data.token,
+      userData: loginRes.data.user,
+      logged: loginRes.data.logged,
+    });
+
+    localStorage.setItem('auth-token', loginRes.data.token);
+    history.push('/create-profile');
+  };
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
+    const userToLogin = { email, password };
+    await Axios.post(`${SERVER_URL}users/login`, userToLogin);
+
+    const loginRes = await Axios.post(
+      `${SERVER_URL}users/login`,
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    const getUserData = await Axios.get(`${SERVER_URL}users/`, {
+      headers: {
+        'x-auth-token': loginRes.data.token,
+      },
+    });
+
+    user?.setUser({
+      token: loginRes.data.token,
+      userData: getUserData.data,
+      logged: loginRes.data.logged,
+    });
+
+    localStorage.setItem('auth-token', loginRes.data.token);
+    history.push('/home');
   };
 
   return (
     <>
       <StyledFormWrapper>
         <Text>{title}</Text>
-        <StyledForm onSubmit={handleSubmit}>
+        <StyledForm onSubmit={register ? handleRegister : handleLogin}>
           {emailInput}
           {passwordInput}
+          {register && passwordCheckInput}
           <ButtonWraper>
             <RegisterButton type="submit">{title}</RegisterButton>
             <ChangeAuthAction>
               {question}
-              <Link style={{ textDecoration: 'none', marginLeft: 5 }} to={route}>
+              <Link
+                style={{ textDecoration: 'none', marginLeft: 5 }}
+                to={route}>
                 {action}
               </Link>
             </ChangeAuthAction>

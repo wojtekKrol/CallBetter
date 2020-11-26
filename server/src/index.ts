@@ -12,6 +12,7 @@ dotenv.config();
 
 const { MONGO_URI } = process.env;
 
+mongoose.set('returnOriginal', true);
 // @ts-ignore
 void mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,

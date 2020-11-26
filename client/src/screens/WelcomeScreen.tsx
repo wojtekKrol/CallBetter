@@ -1,8 +1,9 @@
 import React from 'react';
-import Layout from '../components/Layout/Layout';
-import styled from 'styled-components';
-import RouteTypes from '../constants/routes';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+import Layout from '../components/Layout/Layout';
+import RouteTypes from '../constants/routes';
 
 const Content = styled.div`
   display: flex;
@@ -52,7 +53,7 @@ const WelcomeScreen = () => {
         <Text>anyone</Text>
         <Text>anytime</Text>
         <Text>anywhere</Text>
-        <Link style={{ textDecoration: 'none' }} to={RouteTypes.LOG_IN}>
+        <Link style={{ textDecoration: 'none' }} to={RouteTypes.SIGN_UP}>
           {' '}
           <TryButton>Try for free</TryButton>
         </Link>

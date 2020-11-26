@@ -55,7 +55,7 @@ router.post(
       const savedUser = await newUser.save();
       return res.json(savedUser);
     } catch (err: any) {
-      return res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
   },
 );
@@ -80,7 +80,7 @@ router.post(
         });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(password, user?.password);
 
       if (!isMatch) {
         return res.status(400).json({ msg: 'Invalid credentials.' });
@@ -89,14 +89,13 @@ router.post(
       const token = jwt.sign({ id: user._id }, <string>process.env.JWT_SECRET);
       return res.json({
         token,
-        user: {
+        userData: {
           id: user._id,
-          name: user.name,
-          email: user.email,
         },
+        logged: true,
       });
     } catch (err) {
-      return res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
   },
 );
@@ -107,14 +106,13 @@ router.delete('/delete', auth, async (req: Request, res: Response) => {
     const deletedUser = await User.findByIdAndDelete(req.user);
     res.json(deletedUser);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-router.post('/tokenisvalid', async (req: Request, res: Response) => {
+router.post('/tokenIsValid', async (req: Request, res: Response) => {
   try {
     const token = req.header('x-auth-token');
-
     if (!token) {
       return res.json(false);
     }
@@ -135,7 +133,43 @@ router.post('/tokenisvalid', async (req: Request, res: Response) => {
 
     return res.json(true);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/', auth, async (req: any, res: any) => {
+  const user = await User.findById(req.user);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  res.json(user);
+});
+
+router.post('/createProfile', auth, async (req: any, res: any) => {
+  try {
+    const { name, gender, birthday, about } = req.body;
+
+    if (!name || !gender || !birthday || !about) {
+      return res.status(400).json({ msg: 'Not all fields have been entered.' });
+    }
+    if (about.length > 256) {
+      return res
+        .status(400)
+        .json({ msg: 'About must be shorter than 256 chars' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      // @ts-ignore
+      req.user,
+      {
+        name,
+        gender,
+        birthday,
+        about,
+      },
+      { new: true },
+    );
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

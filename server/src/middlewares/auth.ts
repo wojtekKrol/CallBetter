@@ -16,9 +16,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     // @ts-ignore
     const verified = jwt.verify(token, JWT_SECRET);
     if (!verified) {
-      return res
-        .status(401)
-        .json({ msg: 'No authentication token, access denied' });
+      return res.status(401).json({ msg: 'No verified, access denied' });
     }
 
     // @ts-ignore

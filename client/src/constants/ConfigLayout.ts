@@ -3,10 +3,13 @@ import RouteTypes from './routes';
 export enum ForSessionState {
   NO_AUTH = -1,
   AUTH = 0,
-  ALL
+  ALL,
 }
 
-type SessionStateElement = ForSessionState.NO_AUTH | ForSessionState.AUTH | ForSessionState.ALL;
+type SessionStateElement =
+  | ForSessionState.NO_AUTH
+  | ForSessionState.AUTH
+  | ForSessionState.ALL;
 
 interface LayoutBaseItem {
   label: string;
@@ -20,8 +23,13 @@ export interface LayoutRouteItem extends LayoutBaseItem {
 
 export type LayoutItem = LayoutRouteItem;
 
-const handleShowFor = (arr: Array<LayoutItem>, showForArray: SessionStateElement[]) =>
-  arr.filter(({ showFor }) => showForArray.some((val: SessionStateElement) => val === showFor));
+const handleShowFor = (
+  arr: Array<LayoutItem>,
+  showForArray: SessionStateElement[],
+) =>
+  arr.filter(({ showFor }) =>
+    showForArray.some((val: SessionStateElement) => val === showFor),
+  );
 
 function getForAuth(arr: Array<LayoutItem>) {
   const { AUTH, ALL } = ForSessionState;
@@ -42,13 +50,13 @@ const mainNavConfig: Array<LayoutItem> = [
     label: 'Log in',
     route: RouteTypes.LOG_IN,
     showFor: ForSessionState.NO_AUTH,
-    ws: true
+    ws: true,
   },
   {
     label: 'Log out',
-    route: RouteTypes.HOME,
-    showFor: ForSessionState.AUTH
-  }
+    route: RouteTypes.INDEX,
+    showFor: ForSessionState.AUTH,
+  },
 ];
 
 export const mainNavConfigUser = getForAuth(mainNavConfig);

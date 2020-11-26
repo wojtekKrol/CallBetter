@@ -5,7 +5,7 @@ export enum RouteTypes {
   PROFILE = '/profile',
   LOG_IN = '/log-in',
   SIGN_UP = '/sign-up',
-  VIDEO_CALL = '/call/:callId'
+  VIDEO_CALL = '/call/:callId',
 }
 
 export default RouteTypes;

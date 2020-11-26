@@ -14,13 +14,14 @@ export interface UserData {
 }
 
 export interface UserProps extends Document {
+  readonly id: string;
   email: string;
   password: string;
-  passwordCheck: string;
-  name: string;
-  gender: string;
-  birthday: Date;
-  about: string;
+  passwordCheck?: string;
+  name?: string;
+  gender?: string;
+  birthday?: Date;
+  about?: string;
 }
 
 export interface UserLoginQuery {
