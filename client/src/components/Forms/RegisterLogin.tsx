@@ -55,7 +55,7 @@ const RegisterLoginForm = ({
 
     user?.setUser({
       token: loginRes.data.token,
-      userData: loginRes.data.user,
+      userData: loginRes.data.userData,
       logged: loginRes.data.logged,
     });
 
