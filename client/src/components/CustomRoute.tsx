@@ -7,7 +7,7 @@ import ROUTES from '../constants/routes';
 const CustomRoute = ({ component: Component, ...rest }: any) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const user = rest?.user;
-  console.log(user);
+
   const profileKeys = Object.keys(user?.userData);
 
   const requiredFields = [
