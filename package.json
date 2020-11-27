@@ -14,6 +14,12 @@
     "start:server": "yarn workspace server devStart",
     "build:client": "yarn workspace client build",
     "build:server": "yarn workspace server build",
+    "start": "concurrently 'yarn start:client' 'yarn start:server'",
+    "build": "concurrently 'yarn build:client' 'yarn build:server'",
+    "build:dockerServer": "docker build --tag=\"callbetter:server\" .",
+    "build:dockerCompose": "docker-compose build",
+    "start:dockerServer": " docker run -e MONGO_PASSWORD=callbetterAdmin -p 5000:5000 -d  callbetter:server",
+    "start:dockerCompose": "docker-compose up",
     "lint": "eslint --fix .",
     "fix": "./scripts/lint.sh --fix"
   },
