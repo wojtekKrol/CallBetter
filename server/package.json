@@ -2,7 +2,7 @@
   "name": "server",
   "private": true,
   "version": "0.1.0",
-  "description": "callbetter server",
+  "description": "callbetter server.",
   "main": "index.js",
   "repository": "https://github.com/wojtekKrol/callbetter",
   "author": "Wojtek",
