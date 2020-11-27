@@ -35,6 +35,7 @@
     "config": "ts-node set-env.ts",
     "start": "node build/index.js",
     "build": "tsc --build  && yarn run config",
-    "start:Watch": "nodemon build/index.js"
+    "start:Watch": "nodemon build/index.js",
+    "buildAndRun": "yarn build && yarn build:server"
   }
 }
