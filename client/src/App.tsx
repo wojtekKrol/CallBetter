@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
 
 import Routing from './Routing';
 import { useUser } from './api/actions/useUser';
