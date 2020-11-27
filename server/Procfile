@@ -1,1 +1,1 @@
-web: yarn buildAndRun
+web: tsc --build
