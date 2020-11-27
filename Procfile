@@ -1,1 +1,1 @@
-web: sh -c 'cd ./server' && yarn buildAndRun
+web: sh -c 'cd ./server' && yarn build

@@ -28,6 +28,7 @@
     "mongodb": "^3.3.4",
     "mongoose": "^5.10.15",
     "mongoose-hidden": "^1.8.1",
+    "ncc": "^0.3.6",
     "nodemon": "^2.0.6"
   },
   "scripts": {
@@ -35,8 +36,6 @@
     "tsc": "tsc",
     "config": "ts-node set-env.ts",
     "start": "node build/index.js",
-    "build": "tsc --build",
-    "start:Watch": "nodemon build/index.js",
-    "buildAndRun": "yarn build && yarn start:Watch"
+    "build": "ncc build src/index.ts -o build && node build/index.js"
   }
 }

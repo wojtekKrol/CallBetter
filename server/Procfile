@@ -1,1 +1,1 @@
-web: tsc --build
+web: yarn build
