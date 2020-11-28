@@ -97,7 +97,9 @@ const RegisterLoginForm = ({
         userData: getUserData.data,
         logged: loginRes.data.logged,
       });
+
       enqueueSnackbar('Logged in.', { variant: 'success' });
+
       localStorage.setItem('auth-token', loginRes.data.token);
       history.push('/home');
     } catch (error) {

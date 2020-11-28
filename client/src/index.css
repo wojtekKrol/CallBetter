@@ -13,6 +13,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+body::-webkit-scrollbar {
+    display: none;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -22,4 +26,27 @@ input[type=date]::-webkit-inner-spin-button {
     display: none;
     -moz-appearance: none;
     appearance: none;
+}
+
+
+.fade-appear,
+.fade-enter {
+    opacity: 0;
+    z-index: 1;
+    transform: translateY(-50px);
+}
+
+.fade-appear-active,
+.fade-enter.fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms linear 150ms, transform 300ms ease-out 150ms;
+}
+
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+    opacity: 0;
 }

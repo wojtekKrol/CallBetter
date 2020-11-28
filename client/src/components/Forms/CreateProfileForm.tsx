@@ -14,6 +14,7 @@ import {
   StyledFormWrapper,
   Text,
 } from './RegisterLogin';
+
 const CreateProfileForm = () => {
   const user = useContext(UserContext);
   const history = useHistory();
@@ -66,27 +67,25 @@ const CreateProfileForm = () => {
   };
 
   return (
-    <>
-      <StyledFormWrapper>
-        <Text>Create profile</Text>
-        <StyledForm onSubmit={handleSubmit}>
-          {nameInput}
+    <StyledFormWrapper>
+      <Text>Create profile</Text>
+      <StyledForm onSubmit={handleSubmit}>
+        {nameInput}
 
-          <Select onChange={handleChange} value={gender} required>
-            <option value="" selected disabled hidden>
-              Gender
-            </option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </Select>
-          {birthdayInput}
-          {aboutInput}
-          <ButtonWraper>
-            <RegisterButton type="submit">Create</RegisterButton>
-          </ButtonWraper>
-        </StyledForm>
-      </StyledFormWrapper>
-    </>
+        <Select onChange={handleChange} value={gender} required>
+          <option value="" selected disabled hidden>
+            Gender
+          </option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </Select>
+        {birthdayInput}
+        {aboutInput}
+        <ButtonWraper>
+          <RegisterButton type="submit">Create</RegisterButton>
+        </ButtonWraper>
+      </StyledForm>
+    </StyledFormWrapper>
   );
 };
 
