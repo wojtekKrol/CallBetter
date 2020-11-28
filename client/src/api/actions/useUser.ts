@@ -10,8 +10,10 @@ export const useUser = () => {
     userData: undefined,
     logged: undefined,
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    setLoading(true);
     const checkLoggedIn = async () => {
       let token = localStorage.getItem('auth-token');
       if (token === null) {
@@ -36,10 +38,11 @@ export const useUser = () => {
           logged: true,
         });
       }
+      setLoading(false);
     };
 
     // eslint-disable-next-line no-void
     void checkLoggedIn();
   }, []);
-  return [user, setUser] as const;
+  return [user, loading, setUser] as const;
 };
