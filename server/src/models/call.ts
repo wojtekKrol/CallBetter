@@ -4,19 +4,12 @@ const callSchema = new Schema(
   {
     hostId: {
       type: String,
-      required: true,
     },
     guestId: {
       type: String,
-      required: true,
-    },
-    startDate: {
-      type: Date,
-      required: true,
     },
     endDate: {
       type: Date,
-      required: true,
     },
   },
   {

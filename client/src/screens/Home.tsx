@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { v4 as uuidV4 } from 'uuid';
 
 import Layout from '../components/Layout/Layout';
 import './styles/home.css';
@@ -43,11 +44,14 @@ const VideoSection = styled.div`
 `;
 
 const CameraPreview = () => {
+  const id = uuidV4();
+
   return (
     <div className="videoWrapper">
+      <video autoPlay playsInline />
       <div className="videoButtonWrapper">
         {' '}
-        <Link to={ROUTES.VIDEO_CALL} className="videoCreateRoom">
+        <Link to={`/call/${id}`} className="videoCreateRoom">
           Create room
         </Link>
       </div>

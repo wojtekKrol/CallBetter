@@ -1,13 +1,18 @@
 import { SnackbarProvider } from 'notistack';
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import socketIOClient from 'socket.io-client';
 
 import Routing from './Routing';
 import { useUser } from './api/actions/useUser';
 import Loading from './components/Loading';
+import { SERVER_URL } from './constants/server';
 import UserContext from './lib/UserContext';
 const App = () => {
   const [user, loading, setUser] = useUser() || {};
   const [auth, setAuth] = useState<string>('no-auth');
+  const location = useLocation();
 
   useEffect(() => {
     const userAuthStatus = user.logged ? 'auth' : 'no-auth';
@@ -23,13 +28,16 @@ const App = () => {
       <SnackbarProvider
         dense
         autoHideDuration={5000}
-        disableWindowBlurListener
         maxSnack={3}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
         }}>
-        <Routing auth={auth} />
+        <TransitionGroup>
+          <CSSTransition key={location.key} timeout={450} classNames="fade">
+            <Routing auth={auth} />
+          </CSSTransition>
+        </TransitionGroup>
       </SnackbarProvider>
     </UserContext.Provider>
   );

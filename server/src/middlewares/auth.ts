@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 const auth = (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.header('x-auth-token');
+    const callId = req.header('callId');
 
     if (!token) {
       return res
@@ -19,8 +20,14 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
       return res.status(401).json({ msg: 'No verified, access denied' });
     }
 
+    if (callId) {
+      // @ts-ignore
+      req.callId = callId;
+    }
+
     // @ts-ignore
     req.user = verified.id;
+
     next();
   } catch (err) {
     return res.status(500).json({ error: err.message });

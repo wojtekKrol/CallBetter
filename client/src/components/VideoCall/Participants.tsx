@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
+
 import Participant from './Participant';
 import Preview from './Preview';
 
@@ -13,9 +14,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       height: '70vh',
       display: 'flex',
-      flexDirection: 'column'
-    }
-  }
+      flexDirection: 'column',
+    },
+  },
 }));
 
 const Participants = () => {

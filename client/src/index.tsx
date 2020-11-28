@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Router } from 'react-router-dom';
 
 import App from './App';
+import { history } from './lib/actions';
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
-import { Router } from 'react-router-dom';
-
-import { history } from './lib/actions';
 
 ReactDOM.render(
   <React.StrictMode>
