@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { useSnackbar } from 'notistack';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -25,13 +26,11 @@ const RegisterLoginForm = ({
   const user = useContext(UserContext);
   const history = useHistory();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [email, emailInput] = useInput({
     type: 'email',
     label: 'Email',
     name: 'email',
   });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [password, passwordInput] = useInput({
     type: 'password',
     label: 'Password',
@@ -42,59 +41,70 @@ const RegisterLoginForm = ({
     label: 'Verify password',
     name: 'passwordCheck',
   });
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
-    const newUser = { email, password, passwordCheck };
-    await Axios.post(`${SERVER_URL}users/sign-up`, newUser);
+    try {
+      const newUser = { email, password, passwordCheck };
+      await Axios.post(`${SERVER_URL}users/sign-up`, newUser);
 
-    const loginRes = await Axios.post(`${SERVER_URL}users/login`, {
-      email,
-      password,
-    });
+      const loginRes = await Axios.post(`${SERVER_URL}users/login`, {
+        email,
+        password,
+      });
 
-    user?.setUser({
-      token: loginRes.data.token,
-      userData: loginRes.data.userData,
-      logged: loginRes.data.logged,
-    });
+      user?.setUser({
+        token: loginRes.data.token,
+        userData: loginRes.data.userData,
+        logged: loginRes.data.logged,
+      });
 
-    localStorage.setItem('auth-token', loginRes.data.token);
-    history.push('/create-profile');
+      localStorage.setItem('auth-token', loginRes.data.token);
+      enqueueSnackbar('Account created.', { variant: 'success' });
+      history.push('/create-profile');
+    } catch (error) {
+      const msg = error.response.data.msg;
+      msg && enqueueSnackbar(msg, { variant: 'error' });
+    }
   };
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    const userToLogin = { email, password };
-    await Axios.post(`${SERVER_URL}users/login`, userToLogin);
+    try {
+      const userToLogin = { email, password };
+      await Axios.post(`${SERVER_URL}users/login`, userToLogin);
 
-    const loginRes = await Axios.post(
-      `${SERVER_URL}users/login`,
-      {
-        email,
-        password,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
+      const loginRes = await Axios.post(
+        `${SERVER_URL}users/login`,
+        {
+          email,
+          password,
         },
-      },
-    );
-    const getUserData = await Axios.get(`${SERVER_URL}users/`, {
-      headers: {
-        'x-auth-token': loginRes.data.token,
-      },
-    });
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const getUserData = await Axios.get(`${SERVER_URL}users/`, {
+        headers: {
+          'x-auth-token': loginRes.data.token,
+        },
+      });
 
-    user?.setUser({
-      token: loginRes.data.token,
-      userData: getUserData.data,
-      logged: loginRes.data.logged,
-    });
-
-    localStorage.setItem('auth-token', loginRes.data.token);
-    history.push('/home');
+      user?.setUser({
+        token: loginRes.data.token,
+        userData: getUserData.data,
+        logged: loginRes.data.logged,
+      });
+      enqueueSnackbar('Logged in.', { variant: 'success' });
+      localStorage.setItem('auth-token', loginRes.data.token);
+      history.push('/home');
+    } catch (error) {
+      const msg = error.response.data.msg;
+      msg && enqueueSnackbar(msg, { variant: 'error' });
+    }
   };
-
   return (
     <>
       <StyledFormWrapper>
