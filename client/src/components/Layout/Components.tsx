@@ -14,7 +14,7 @@ export const Container = styled.div<ContainerProps>`
     welcomeScreen ? 'url(' + img + ')' : 'white'};
   background-size: cover;
   word-wrap: break-word;
-  @media (max-width: 400px) {
+  @media (max-width: 415px) {
     background: ${({ welcomeScreen }) =>
       welcomeScreen ? 'linear-gradient(270deg,#021b79,#0575e6)' : 'white'};
   }
@@ -26,7 +26,7 @@ export const Overlay = styled.div<ContainerProps>`
     welcomeScreen
       ? 'linear-gradient(\n    227.23deg,\n    rgba(158, 0, 255, 0.54) 4.03%,\n    rgba(112, 0, 255, 0.54) 91.25%\n  );'
       : 'white'};
-  @media (max-width: 400px) {
+  @media (max-width: 415px) {
     background: transparent;
   }
 `;

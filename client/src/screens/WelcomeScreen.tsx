@@ -10,7 +10,7 @@ const Content = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   height: 80vh;
-  @media (max-width: 400px) {
+  @media (max-width: 415px) {
     height: 100%;
   }
 `;
@@ -26,7 +26,7 @@ const Text = styled.div`
   align-items: center;
   color: #ffffff;
   margin-left: 10px;
-  @media (max-width: 400px) {
+  @media (max-width: 415px) {
     font-size: 30px;
     justify-content: flex-end;
   }
@@ -52,7 +52,7 @@ const TryButton = styled.div`
     background: transparent;
     transition: all 0.2s ease-in-out;
   }
-  @media (max-width: 400px) {
+  @media (max-width: 415px) {
     margin: 50px auto 0 auto;
     width: 100%;
     height: 60px;
@@ -67,7 +67,7 @@ const WelcomeScreen = () => {
   return (
     <Layout welcomeScreen>
       <Content>
-        {width <= 400 && (
+        {width <= 415 && (
           <img
             src={mobile}
             alt="mobile"
