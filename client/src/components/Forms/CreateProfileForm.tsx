@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { useSnackbar } from 'notistack';
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -13,10 +14,10 @@ import {
   StyledFormWrapper,
   Text,
 } from './RegisterLogin';
-
 const CreateProfileForm = () => {
   const user = useContext(UserContext);
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [name, nameInput] = useInput({
     type: 'text',
@@ -39,23 +40,29 @@ const CreateProfileForm = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const token = localStorage.getItem('auth-token');
-    const updateProfile = { name, birthday, gender, about };
-    const updatedUser = await Axios.post(
-      `${SERVER_URL}users/createProfile`,
-      updateProfile,
-      {
-        headers: {
-          'x-auth-token': token,
-          'Content-Type': 'application/json',
+    try {
+      const token = localStorage.getItem('auth-token');
+      const updateProfile = { name, birthday, gender, about };
+      const updatedUser = await Axios.post(
+        `${SERVER_URL}users/createProfile`,
+        updateProfile,
+        {
+          headers: {
+            'x-auth-token': token,
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
-    user?.setUser((prevState: any) => ({
-      ...prevState,
-      userData: { ...prevState.userData, ...updatedUser.data },
-    }));
-    history.push('/home');
+      );
+      user?.setUser((prevState: any) => ({
+        ...prevState,
+        userData: { ...prevState.userData, ...updatedUser.data },
+      }));
+      enqueueSnackbar('Profile created.', { variant: 'success' });
+      history.push('/home');
+    } catch (error) {
+      const msg = error.response.data.msg;
+      msg && enqueueSnackbar(msg, { variant: 'error' });
+    }
   };
 
   return (

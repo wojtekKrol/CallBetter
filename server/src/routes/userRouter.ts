@@ -76,7 +76,7 @@ router.post(
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({
-          error: `There is no user with this email has been registered.`,
+          msg: `There is no user with this email has been registered.`,
         });
       }
 
