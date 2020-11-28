@@ -1,9 +1,9 @@
+import { SnackbarProvider } from 'notistack';
 import React, { useEffect, useState } from 'react';
 
 import Routing from './Routing';
 import { useUser } from './api/actions/useUser';
 import UserContext from './lib/UserContext';
-
 const App = () => {
   const [user, setUser] = useUser() || {};
   const [auth, setAuth] = useState<string>('no-auth');
@@ -15,7 +15,15 @@ const App = () => {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      <Routing auth={auth} />
+      <SnackbarProvider
+        dense
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}>
+        <Routing auth={auth} />
+      </SnackbarProvider>
     </UserContext.Provider>
   );
 };

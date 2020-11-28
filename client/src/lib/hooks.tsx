@@ -18,7 +18,6 @@ export const useInput = ({ type, name, label }: HookProps) => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={label}
-        required
       />
     </>
   );
@@ -73,7 +72,7 @@ export const StyledInput = styled.input`
 export const StyledTextArea = styled.textarea`
   max-width: 100%;
   min-width: 100%;
-  min-height: 100px;
-  max-height: 300px;
+  min-height: 130px;
+  max-height: 130px;
   ${sharedStyles}
 `;
