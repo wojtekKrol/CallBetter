@@ -2,12 +2,10 @@ import { SnackbarProvider } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import socketIOClient from 'socket.io-client';
 
 import Routing from './Routing';
 import { useUser } from './api/actions/useUser';
 import Loading from './components/Loading';
-import { SERVER_URL } from './constants/server';
 import UserContext from './lib/UserContext';
 const App = () => {
   const [user, loading, setUser] = useUser() || {};
