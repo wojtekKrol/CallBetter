@@ -1,12 +1,15 @@
-import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import Axios from 'axios';
+import { useSnackbar } from 'notistack';
+import React from 'react';
+import { useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { v4 as uuidV4 } from 'uuid';
 
 import Layout from '../components/Layout/Layout';
 import './styles/home.css';
 import InfoIcon from '../components/SVG/InfoIcon';
-import ROUTES from '../constants/routes';
+import { SERVER_URL } from '../constants/server';
+import UserContext from '../lib/UserContext';
 
 const Home = () => {
   return (
@@ -44,16 +47,41 @@ const VideoSection = styled.div`
 `;
 
 const CameraPreview = () => {
-  const id = uuidV4();
+  const { enqueueSnackbar } = useSnackbar();
+  const user = useContext(UserContext);
+  const history = useHistory();
+
+  const createCall = async (e: any) => {
+    e.preventDefault();
+    try {
+      const hostId: string = user?.user?.userData?.id;
+      const token = localStorage.getItem('auth-token');
+      const newCall = await Axios.post(
+        `${SERVER_URL}call/createCall`,
+        { hostId },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+
+      enqueueSnackbar('Call room created.', { variant: 'success' });
+      history.push(`/call/${newCall?.data?.id}`);
+    } catch (error) {
+      const msg = error.response.data.msg;
+      msg && enqueueSnackbar(msg, { variant: 'error' });
+    }
+  };
 
   return (
     <div className="videoWrapper">
       <video autoPlay playsInline />
       <div className="videoButtonWrapper">
-        {' '}
-        <Link to={`/call/${id}`} className="videoCreateRoom">
+        <div className="videoCreateRoom" onClick={createCall}>
           Create room
-        </Link>
+        </div>
       </div>
     </div>
   );
@@ -79,6 +107,7 @@ const HitoryPreview = () => {
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
   ];
+  const history = useHistory();
 
   return (
     <div className="historyWrapper">
@@ -93,7 +122,11 @@ const HitoryPreview = () => {
           </div>
         ))}
       </div>
-      <button className="historyButton">Show more</button>
+      <button
+        className="historyButton"
+        onClick={() => history.push(`/call/5fc3e50cb134ddd02ec33e32`)}>
+        Show more
+      </button>
     </div>
   );
 };

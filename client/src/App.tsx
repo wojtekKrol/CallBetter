@@ -9,7 +9,7 @@ import Loading from './components/Loading';
 import UserContext from './lib/UserContext';
 const App = () => {
   const [user, loading, setUser] = useUser() || {};
-  const [auth, setAuth] = useState<string>('no-auth');
+  const [auth, setAuth] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const App = () => {
     setAuth(userAuthStatus);
   }, [user]);
 
-  if (loading) {
+  if (loading || auth === null) {
     return <Loading />;
   }
 
