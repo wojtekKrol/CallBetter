@@ -8,7 +8,7 @@ import { CallStatuses } from '../api/types/call';
 import Layout from '../components/Layout/Layout';
 import './styles/home.css';
 import InfoIcon from '../components/SVG/InfoIcon';
-import { AUTH_TOKEN, SERVER_URL } from '../constants/server';
+import { SERVER_URL } from '../constants/server';
 import UserContext from '../lib/UserContext';
 
 const Home = () => {
@@ -56,7 +56,7 @@ const CameraPreview = () => {
     try {
       const hostId: string = user?.user?.userData?.id;
       const status = CallStatuses.OPENED;
-      const token = localStorage.getItem(AUTH_TOKEN);
+      const token = localStorage.getItem('auth-token');
       const newCall = await Axios.post(
         `${SERVER_URL}call/createCall`,
         { hostId, status },
