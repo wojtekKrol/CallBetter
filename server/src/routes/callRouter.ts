@@ -20,13 +20,15 @@ router.get('/getCallData', auth, async (req: any, res: any) => {
 
 router.post(`/createCall`, auth, async (req: any, res: any) => {
   try {
-    const { hostId } = req.body;
-
+    const { hostId, status } = req.body;
     if (!hostId) {
       return res.status(400).json({ msg: 'There is no provided hostId.' });
     }
+    if (!status) {
+      return res.status(400).json({ msg: 'There is no provided status.' });
+    }
 
-    const newCall = new Call({ hostId });
+    const newCall = new Call({ hostId, status });
     const savedCall = await newCall.save();
 
     res.json(savedCall);

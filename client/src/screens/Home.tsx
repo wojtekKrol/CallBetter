@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { CallStatuses } from '../api/types/call';
 import Layout from '../components/Layout/Layout';
 import './styles/home.css';
 import InfoIcon from '../components/SVG/InfoIcon';
@@ -55,10 +56,11 @@ const CameraPreview = () => {
     e.preventDefault();
     try {
       const hostId: string = user?.user?.userData?.id;
+      const status = CallStatuses.OPENED;
       const token = localStorage.getItem('auth-token');
       const newCall = await Axios.post(
         `${SERVER_URL}call/createCall`,
-        { hostId },
+        { hostId, status },
         {
           headers: {
             'Content-Type': 'application/json',

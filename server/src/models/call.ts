@@ -11,6 +11,9 @@ const callSchema = new Schema(
     endDate: {
       type: Date,
     },
+    status: {
+      type: String,
+    },
   },
   {
     timestamps: true,
