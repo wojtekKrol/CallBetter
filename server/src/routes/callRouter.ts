@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises,consistent-return */
 /* eslint-disable-next-line consistent-return */
 
-import express, { Response, Router } from 'express';
+import express, { Router } from 'express';
 
 import auth from '../middlewares/auth';
 import Call from '../models/call';
-import { CustomRequestWithQuery } from '../types/customRequestResponse';
+import User from '../models/user';
 
 const router: Router = express.Router();
 
@@ -36,5 +36,27 @@ router.post(`/createCall`, auth, async (req: any, res: any) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.post('/endCall', auth, async (req: any, res: any) => {
+  try {
+    const { id, endDate, status } = req.body;
+
+    const updatedCall = await Call.findByIdAndUpdate(
+      id,
+      { endDate, status },
+      { new: true },
+    );
+    res.json(updatedCall);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// router.post('/updateCall', auth, async (req: any, res: any) => {
+//   try {
+//   } catch (err: any) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 export default router;
