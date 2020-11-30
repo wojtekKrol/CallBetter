@@ -80,7 +80,15 @@ const VideoCall = () => {
       // eslint-disable-next-line no-void
       void tryUpdateCall();
     }
-  }, [callData, callId, enqueueSnackbar, gettingDataLoading, token, userId]);
+  }, [
+    callData,
+    callId,
+    enqueueSnackbar,
+    gettingDataLoading,
+    history,
+    token,
+    userId,
+  ]);
 
   if (gettingDataLoading || updateDataLoading) {
     return <Loading />;

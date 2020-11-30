@@ -28,13 +28,6 @@ const io = socketIo(server, {
   },
 });
 
-const test = (socket: any) => {
-  setInterval(
-    () => socket.emit('gitaraSiema', Math.floor(Math.random() * 100)),
-    1000,
-  );
-};
-
 io.on('connection', (socket: any) => {
   console.log('Socket.io connected');
 
