@@ -1,3 +1,4 @@
+import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import React from 'react';
@@ -15,10 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: theme.spacing(2),
       },
     },
-    loading: {
-      width: theme.spacing(10),
-      height: theme.spacing(10),
-    },
   }),
 );
 
@@ -27,8 +24,11 @@ const Loading = () => {
 
   return (
     <div className={classes.root}>
-      <CircularProgress className={classes.loading} />
+      <Backdrop open>
+        <CircularProgress />
+      </Backdrop>
     </div>
   );
 };
+
 export default Loading;

@@ -21,6 +21,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
 
     // @ts-ignore
     req.user = verified.id;
+
     next();
   } catch (err) {
     return res.status(500).json({ error: err.message });

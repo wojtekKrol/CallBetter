@@ -1,11 +1,15 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import Axios from 'axios';
+import { useSnackbar } from 'notistack';
+import React, { useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { CallStatuses } from '../api/types/call';
 import Layout from '../components/Layout/Layout';
 import './styles/home.css';
 import InfoIcon from '../components/SVG/InfoIcon';
-import ROUTES from '../constants/routes';
+import { AUTH_TOKEN, SERVER_URL } from '../constants/server';
+import UserContext from '../lib/UserContext';
 
 const Home = () => {
   return (
@@ -43,13 +47,42 @@ const VideoSection = styled.div`
 `;
 
 const CameraPreview = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const user = useContext(UserContext);
+  const history = useHistory();
+
+  const createCall = async (e: any) => {
+    e.preventDefault();
+    try {
+      const hostId: string = user?.user?.userData?.id;
+      const status = CallStatuses.OPENED;
+      const token = localStorage.getItem(AUTH_TOKEN);
+      const newCall = await Axios.post(
+        `${SERVER_URL}call/createCall`,
+        { hostId, status },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+
+      enqueueSnackbar('Call room created.', { variant: 'success' });
+      history.push(`/call/${newCall?.data?.id}`);
+    } catch (error) {
+      const msg = error.response.data.msg;
+      msg && enqueueSnackbar(msg, { variant: 'error' });
+    }
+  };
+
   return (
     <div className="videoWrapper">
+      <video autoPlay playsInline />
       <div className="videoButtonWrapper">
-        {' '}
-        <Link to={ROUTES.VIDEO_CALL} className="videoCreateRoom">
+        <button className="videoCreateRoom" onClick={createCall}>
           Create room
-        </Link>
+        </button>
       </div>
     </div>
   );
@@ -89,7 +122,9 @@ const HitoryPreview = () => {
           </div>
         ))}
       </div>
-      <button className="historyButton">Show more</button>
+      <button className="historyButton" onClick={() => console.log('ts')}>
+        Show more
+      </button>
     </div>
   );
 };
