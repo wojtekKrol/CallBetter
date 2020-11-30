@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import { useState, useEffect } from 'react';
 
-import { AUTH_TOKEN, SERVER_URL } from '../../constants/server';
+import { SERVER_URL } from '../../constants/server';
 import { State } from '../types/user';
 
 export const useUser = () => {
@@ -15,9 +15,9 @@ export const useUser = () => {
   useEffect(() => {
     setLoading(true);
     const checkLoggedIn = async () => {
-      let token = localStorage.getItem(AUTH_TOKEN);
+      let token = localStorage.getItem('auth-token');
       if (token === null) {
-        localStorage.setItem(AUTH_TOKEN, '');
+        localStorage.setItem('auth-token', '');
         token = '';
       }
       const tokenRes = await Axios.post(
