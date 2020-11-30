@@ -5,18 +5,8 @@ import express, { Router } from 'express';
 
 import auth from '../middlewares/auth';
 import Call from '../models/call';
-import User from '../models/user';
 
 const router: Router = express.Router();
-
-router.get('/getCallData', auth, async (req: any, res: any) => {
-  if (req.clientCallId) {
-    const call = await Call.findById(req.clientCallId);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    res.json(call);
-  }
-  res.json({ clientCallId: 'noCallId' });
-});
 
 router.post(`/createCall`, auth, async (req: any, res: any) => {
   try {
@@ -52,11 +42,55 @@ router.post('/endCall', auth, async (req: any, res: any) => {
   }
 });
 
-// router.post('/updateCall', auth, async (req: any, res: any) => {
-//   try {
-//   } catch (err: any) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+router.post('/getCallDetails', auth, async (req: any, res: any) => {
+  try {
+    const { callId } = req.body;
+    const callData = await Call.findById(callId);
+    res.json(callData);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/updateCall', auth, async (req: any, res: any) => {
+  try {
+    const { callId, userId, hostId, guestId, status } = req.body;
+
+    if (!hostId || !status) {
+      return res.status(400).json({ msg: 'hostId or status now provided' });
+    }
+
+    if (status === 'Closed') {
+      return res.json({ msg: 'Meet has been closed.' }).redirect(400, '/');
+    }
+
+    if (hostId) {
+      if (hostId === userId) {
+        return res
+          .status(200)
+          .json({ msg: 'You are host and can join to call.' });
+      }
+    }
+
+    if (guestId) {
+      if (guestId === userId) {
+        return res
+          .status(200)
+          .json({ msg: 'You are guest and can join to call.' });
+      }
+    } else if (!guestId) {
+      await Call.findByIdAndUpdate(callId, { guestId: userId }, { new: true });
+      return res.status(200).json({ msg: 'Call updated' });
+    }
+
+    if (userId !== hostId && userId !== guestId) {
+      return res
+        .status(400)
+        .json({ msg: 'You are not a member of this call.' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;

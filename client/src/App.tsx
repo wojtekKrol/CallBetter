@@ -25,7 +25,7 @@ const App = () => {
     <UserContext.Provider value={{ user, loading, setUser }}>
       <SnackbarProvider
         dense
-        autoHideDuration={5000}
+        autoHideDuration={3000}
         maxSnack={3}
         anchorOrigin={{
           vertical: 'bottom',
