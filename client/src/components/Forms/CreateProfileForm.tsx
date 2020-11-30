@@ -4,7 +4,7 @@ import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { AUTH_TOKEN, SERVER_URL } from '../../constants/server';
+import { SERVER_URL } from '../../constants/server';
 import UserContext from '../../lib/UserContext';
 import { useInput, useTextArea } from '../../lib/hooks';
 import {
@@ -42,7 +42,7 @@ const CreateProfileForm = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem(AUTH_TOKEN);
+      const token = localStorage.getItem('auth-token');
       const updateProfile = { name, birthday, gender, about };
       const updatedUser = await Axios.post(
         `${SERVER_URL}users/createProfile`,

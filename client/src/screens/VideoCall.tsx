@@ -7,7 +7,7 @@ import Layout from '../components/Layout/Layout';
 import Loading from '../components/Loading';
 import Participants from '../components/VideoCall/Participants';
 import Toolbar from '../components/VideoCall/Toolbar';
-import { AUTH_TOKEN, SERVER_URL } from '../constants/server';
+import { SERVER_URL } from '../constants/server';
 import UserContext from '../lib/UserContext';
 
 const VideoCall = () => {
@@ -15,12 +15,13 @@ const VideoCall = () => {
   const history = useHistory();
   const user = useContext(UserContext);
   const userId = user?.user?.userData?.id;
-  // @ts-ignore
-  const callId = params?.callId;
-  const token = localStorage.getItem(AUTH_TOKEN);
 
-  const [gettingDataLoading, setGettingDataLoading] = useState<boolean>(false);
-  const [updateDataLoading, setUpdateDataLoading] = useState<boolean>(false);
+  // @ts-ignore
+  const callId = params.callId;
+  const token = localStorage.getItem('auth-token');
+
+  const [gettingDataLoading, setGettingDataLoading] = useState<boolean>(true);
+  const [updateDataLoading, setUpdateDataLoading] = useState<boolean>(true);
 
   const [callData, setCallData] = useState<any>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -91,7 +92,11 @@ const VideoCall = () => {
   ]);
 
   if (gettingDataLoading || updateDataLoading) {
-    return <Loading />;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   return (
