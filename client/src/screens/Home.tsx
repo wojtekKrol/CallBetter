@@ -1,7 +1,6 @@
 import Axios from 'axios';
 import { useSnackbar } from 'notistack';
-import React from 'react';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,7 +8,7 @@ import { CallStatuses } from '../api/types/call';
 import Layout from '../components/Layout/Layout';
 import './styles/home.css';
 import InfoIcon from '../components/SVG/InfoIcon';
-import { SERVER_URL } from '../constants/server';
+import { AUTH_TOKEN, SERVER_URL } from '../constants/server';
 import UserContext from '../lib/UserContext';
 
 const Home = () => {
@@ -57,7 +56,7 @@ const CameraPreview = () => {
     try {
       const hostId: string = user?.user?.userData?.id;
       const status = CallStatuses.OPENED;
-      const token = localStorage.getItem('auth-token');
+      const token = localStorage.getItem(AUTH_TOKEN);
       const newCall = await Axios.post(
         `${SERVER_URL}call/createCall`,
         { hostId, status },
@@ -81,9 +80,9 @@ const CameraPreview = () => {
     <div className="videoWrapper">
       <video autoPlay playsInline />
       <div className="videoButtonWrapper">
-        <div className="videoCreateRoom" onClick={createCall}>
+        <button className="videoCreateRoom" onClick={createCall}>
           Create room
-        </div>
+        </button>
       </div>
     </div>
   );
@@ -109,7 +108,6 @@ const HitoryPreview = () => {
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
   ];
-  const history = useHistory();
 
   return (
     <div className="historyWrapper">
@@ -124,9 +122,7 @@ const HitoryPreview = () => {
           </div>
         ))}
       </div>
-      <button
-        className="historyButton"
-        onClick={() => history.push(`/call/5fc3e50cb134ddd02ec33e32`)}>
+      <button className="historyButton" onClick={() => console.log('ts')}>
         Show more
       </button>
     </div>

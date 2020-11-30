@@ -7,7 +7,7 @@ import Layout from '../components/Layout/Layout';
 import Loading from '../components/Loading';
 import Participants from '../components/VideoCall/Participants';
 import Toolbar from '../components/VideoCall/Toolbar';
-import { SERVER_URL } from '../constants/server';
+import { AUTH_TOKEN, SERVER_URL } from '../constants/server';
 import UserContext from '../lib/UserContext';
 
 const VideoCall = () => {
@@ -17,7 +17,7 @@ const VideoCall = () => {
   const userId = user?.user?.userData?.id;
   // @ts-ignore
   const callId = params?.callId;
-  const token = localStorage.getItem('auth-token');
+  const token = localStorage.getItem(AUTH_TOKEN);
 
   const [gettingDataLoading, setGettingDataLoading] = useState<boolean>(false);
   const [updateDataLoading, setUpdateDataLoading] = useState<boolean>(false);

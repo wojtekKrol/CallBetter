@@ -5,7 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import RouteTypes from '../../constants/routes';
-import { SERVER_URL } from '../../constants/server';
+import { AUTH_TOKEN, SERVER_URL } from '../../constants/server';
 import UserContext from '../../lib/UserContext';
 import { useInput } from '../../lib/hooks';
 
@@ -60,7 +60,7 @@ const RegisterLoginForm = ({
         logged: loginRes.data.logged,
       });
 
-      localStorage.setItem('auth-token', loginRes.data.token);
+      localStorage.setItem(AUTH_TOKEN, loginRes.data.token);
       enqueueSnackbar('Account created.', { variant: 'success' });
       history.push('/create-profile');
     } catch (error) {
@@ -100,7 +100,7 @@ const RegisterLoginForm = ({
 
       enqueueSnackbar('Logged in.', { variant: 'success' });
 
-      localStorage.setItem('auth-token', loginRes.data.token);
+      localStorage.setItem(AUTH_TOKEN, loginRes.data.token);
       history.push('/home');
     } catch (error) {
       const msg = error.response.data.msg;

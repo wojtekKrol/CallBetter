@@ -3,6 +3,8 @@ import styled from 'styled-components';
 interface NavbarProps {
   welcomeScreen?: boolean;
   logOut?: boolean;
+  primary?: boolean;
+  primaryFont?: boolean;
 }
 
 export const Nav = styled.div<NavbarProps>`
@@ -12,21 +14,23 @@ export const Nav = styled.div<NavbarProps>`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  background-color: ${({ welcomeScreen }) => (welcomeScreen ? 'transparent' : 'white')};
+  background-color: ${({ welcomeScreen }) =>
+    welcomeScreen ? 'transparent' : 'white'};
   box-shadow: ${({ welcomeScreen }) =>
     welcomeScreen ? 'none' : '0 4px 24px rgba(134, 98, 250, 0.25)'}; ;
 `;
 
 export const AuthButton = styled.div<NavbarProps>`
-  width: 140px;
-  height: 50px;
-  background: linear-gradient(83.55deg, #808cff 3.55%, #b276ff 97.88%);
+  width: ${({ primary }) => (primary ? '80px' : '140px')};
+  height: ${({ primary }) => (primary ? '30px' : '50px')};
   box-shadow: 0 3px 6px -2px #beb4ff;
   border-radius: 8px;
   border: 0;
   font-weight: 700;
   background: ${({ welcomeScreen }) =>
-    welcomeScreen ? '#ffffff' : 'linear-gradient(83.55deg, #808cff 3.55%, #b276ff 97.88%)'};
+    welcomeScreen
+      ? '#ffffff'
+      : 'linear-gradient(83.55deg, #808cff 3.55%, #b276ff 97.88%)'};
 
   display: flex;
   justify-content: center;

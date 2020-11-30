@@ -117,7 +117,10 @@
     background: #fff;
     color: #5e27d1;
     transition: all 0.2s ease-in-out;
+
 }
+.videoCreateRoom:active { border-style: outset;}
+
 
 @media(max-width: 768px) {
      .historyWrapper {

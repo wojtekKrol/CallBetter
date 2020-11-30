@@ -8,6 +8,7 @@ import {
   LayoutItem,
 } from '../../constants/ConfigLayout';
 import RouteTypes from '../../constants/routes';
+import { AUTH_TOKEN } from '../../constants/server';
 import UserContext from '../../lib/UserContext';
 import DialogAlert from '../DialogAlert';
 import Logo from '../SVG/Logo';
@@ -28,7 +29,7 @@ const Navbar = ({ welcomeScreen, authForm }: NavbarProps) => {
   const [open, setOpen] = useState(false);
 
   const confirmedCallLeave = () => {
-    localStorage.setItem('auth-token', '');
+    localStorage.setItem(AUTH_TOKEN, '');
     user.setUser({ logged: false, userDate: undefined, token: '' });
     history.push('/');
   };

@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 
 import { CallStatuses } from '../../../api/types/call';
-import { SERVER_URL } from '../../../constants/server';
+import { AUTH_TOKEN, SERVER_URL } from '../../../constants/server';
 import DialogAlert from '../../DialogAlert';
 type Props = {
   className?: string;
@@ -24,7 +24,7 @@ const EndButton = ({ className }: Props) => {
   };
 
   const confirmCallLeave = async () => {
-    const token = localStorage.getItem('auth-token');
+    const token = localStorage.getItem(AUTH_TOKEN);
     const status = CallStatuses.CLOSED;
     const endDate = new Date();
     // @ts-ignore
