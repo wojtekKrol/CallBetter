@@ -9,6 +9,7 @@ import Participants from '../components/VideoCall/Participants';
 import Toolbar from '../components/VideoCall/Toolbar';
 import { SERVER_URL } from '../constants/server';
 import UserContext from '../lib/UserContext';
+import VideoContext from '../lib/VideoContext';
 
 const VideoCall = () => {
   const params = useParams();
@@ -41,17 +42,20 @@ const VideoCall = () => {
             },
           },
         );
+
         setCallData(callData.data);
         setGettingDataLoading(false);
       } catch (error) {
         const msg = error.response.data.msg;
         msg && enqueueSnackbar(msg, { variant: 'error' });
         setGettingDataLoading(false);
+        setUpdateDataLoading(false);
+        history.push('/');
       }
     };
     // eslint-disable-next-line no-void
     void getCallDetails();
-  }, [callId, token, enqueueSnackbar]);
+  }, [callId, token, enqueueSnackbar, history]);
 
   useEffect(() => {
     if (!gettingDataLoading && callData?.hostId && callData?.status) {
@@ -100,10 +104,12 @@ const VideoCall = () => {
   }
 
   return (
-    <Layout>
-      <Participants />
-      <Toolbar />
-    </Layout>
+    <VideoContext.Provider>
+      <Layout>
+        <Participants />
+        <Toolbar />
+      </Layout>
+    </VideoContext.Provider>
   );
 };
 
