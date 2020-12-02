@@ -7,6 +7,7 @@ import Routing from './Routing';
 import { useUser } from './api/actions/useUser';
 import Loading from './components/Loading';
 import UserContext from './lib/UserContext';
+
 const App = () => {
   const [user, loading, setUser] = useUser() || {};
   const [auth, setAuth] = useState<string | null>(null);

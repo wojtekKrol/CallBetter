@@ -74,6 +74,7 @@ router.post(
       }
 
       const user = await User.findOne({ email });
+
       if (!user) {
         return res.status(400).json({
           msg: `There is no user with this email has been registered.`,
@@ -86,11 +87,11 @@ router.post(
         return res.status(400).json({ msg: 'Invalid credentials.' });
       }
 
-      const token = jwt.sign({ id: user._id }, <string>process.env.JWT_SECRET);
+      const token = jwt.sign({ id: user.id }, <string>process.env.JWT_SECRET);
       return res.json({
         token,
         userData: {
-          id: user._id,
+          id: user.id,
         },
         logged: true,
       });

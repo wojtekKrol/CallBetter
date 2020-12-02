@@ -98,15 +98,6 @@ const HitoryPreview = () => {
   const historyRecords = [
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
     { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
-    { name: 'Mati', startTime: '19:38', endTime: '19:44' },
   ];
 
   return (

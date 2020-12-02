@@ -46,6 +46,12 @@ router.post('/getCallDetails', auth, async (req: any, res: any) => {
   try {
     const { callId } = req.body;
     const callData = await Call.findById(callId);
+
+    // @ts-ignore
+    if (callData.status === 'Closed') {
+      return res.status(400).json({ msg: 'Call has been closed.' });
+    }
+
     res.json(callData);
   } catch (err: any) {
     res.status(500).json({ error: err.message });

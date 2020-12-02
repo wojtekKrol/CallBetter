@@ -41,17 +41,22 @@ const VideoCall = () => {
             },
           },
         );
+
         setCallData(callData.data);
         setGettingDataLoading(false);
       } catch (error) {
         const msg = error.response.data.msg;
         msg && enqueueSnackbar(msg, { variant: 'error' });
         setGettingDataLoading(false);
+        setUpdateDataLoading(false);
+        history.push('/');
       }
     };
     // eslint-disable-next-line no-void
     void getCallDetails();
-  }, [callId, token, enqueueSnackbar]);
+
+    return () => console.log('Unmounted');
+  }, [callId, token, enqueueSnackbar, history]);
 
   useEffect(() => {
     if (!gettingDataLoading && callData?.hostId && callData?.status) {
@@ -80,6 +85,7 @@ const VideoCall = () => {
       };
       // eslint-disable-next-line no-void
       void tryUpdateCall();
+      return () => console.log('Unmounted');
     }
   }, [
     callData,
