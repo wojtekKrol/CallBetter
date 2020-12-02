@@ -39,4 +39,4 @@ const userSchema = new Schema(
 
 userSchema.set('toJSON', { getters: true, virtuals: true });
 userSchema.plugin(mongooseHidden());
-export default mongoose.model<UserProps>('User', userSchema);
+export default mongoose.model<any>('User', userSchema);
