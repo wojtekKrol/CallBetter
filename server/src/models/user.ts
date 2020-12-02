@@ -12,10 +12,12 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
+      // @ts-ignore
       hide: true,
     },
     passwordCheck: {
       type: String,
+      // @ts-ignore
       hide: true,
     },
     name: {

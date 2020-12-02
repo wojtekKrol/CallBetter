@@ -9,7 +9,6 @@ import Participants from '../components/VideoCall/Participants';
 import Toolbar from '../components/VideoCall/Toolbar';
 import { SERVER_URL } from '../constants/server';
 import UserContext from '../lib/UserContext';
-import VideoContext from '../lib/VideoContext';
 
 const VideoCall = () => {
   const params = useParams();
@@ -55,6 +54,8 @@ const VideoCall = () => {
     };
     // eslint-disable-next-line no-void
     void getCallDetails();
+
+    return () => console.log('Unmounted');
   }, [callId, token, enqueueSnackbar, history]);
 
   useEffect(() => {
@@ -84,6 +85,7 @@ const VideoCall = () => {
       };
       // eslint-disable-next-line no-void
       void tryUpdateCall();
+      return () => console.log('Unmounted');
     }
   }, [
     callData,
@@ -104,12 +106,10 @@ const VideoCall = () => {
   }
 
   return (
-    <VideoContext.Provider>
-      <Layout>
-        <Participants />
-        <Toolbar />
-      </Layout>
-    </VideoContext.Provider>
+    <Layout>
+      <Participants />
+      <Toolbar />
+    </Layout>
   );
 };
 

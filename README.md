@@ -10,14 +10,14 @@ App to communicate
 
 ## Getting started :octocat:
 
-###  Prequalities
+### Prequalities
 ```
 Node >= 12
 yarn >= 1.22
 docker >= 19
 ```
 
-###  Clone repo and install dependencies
+### Clone repo and install dependencies
 ```
 git clone git@github.com:wojtekKrol/CallBetter.git
 cd CallBetter
