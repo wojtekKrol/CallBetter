@@ -12,10 +12,12 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
+      // @ts-ignore
       hide: true,
     },
     passwordCheck: {
       type: String,
+      // @ts-ignore
       hide: true,
     },
     name: {
@@ -39,4 +41,4 @@ const userSchema = new Schema(
 
 userSchema.set('toJSON', { getters: true, virtuals: true });
 userSchema.plugin(mongooseHidden());
-export default mongoose.model<any>('User', userSchema);
+export default mongoose.model<UserProps>('User', userSchema);
