@@ -11,9 +11,6 @@ import socketIo from 'socket.io';
 import callsRouter from './routes/callRouter';
 import usersRouter from './routes/userRouter';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ExpressPeerServer = require('peer').ExpressPeerServer;
-
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
@@ -23,12 +20,15 @@ app.use(cors());
 app.use(express.json());
 
 const server: http.Server = http.createServer(app);
+server.listen(<number>PORT, () => {
+  console.log(
+    chalk.blue.bold(`Server is running on http://localhost:${PORT} 🔥`),
+  );
+});
 // @ts-ignore
 const io = socketIo(server, {
-  cors: {
-    origin: PORT,
-    methods: ['GET', 'POST'],
-  },
+  cors: true,
+  origin: PORT,
 });
 
 io.on('connection', (socket: any) => {
@@ -58,15 +58,6 @@ mongoose.connection.once('open', () => {
   console.log(chalk.yellow.bold('MongoDB connected 🚀'));
 });
 
-const peerServer = ExpressPeerServer(server);
-
-server.listen(<number>PORT, () => {
-  console.log(
-    chalk.blue.bold(`Server is running on http://localhost:${PORT} 🔥`),
-  );
-});
-
 //set up routes
-app.use('/', peerServer);
 app.use('/users', usersRouter);
 app.use('/call', callsRouter);
