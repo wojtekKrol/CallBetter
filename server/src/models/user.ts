@@ -31,6 +31,9 @@ const userSchema = new Schema(
       type: String,
       maxlength: 256,
     },
+    _id: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -39,4 +42,4 @@ const userSchema = new Schema(
 
 userSchema.set('toJSON', { getters: true, virtuals: true });
 userSchema.plugin(mongooseHidden());
-export default mongoose.model<any>('User', userSchema);
+export default mongoose.model<UserProps>('User', userSchema);
