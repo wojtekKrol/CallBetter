@@ -99,4 +99,26 @@ router.post('/updateCall', auth, async (req: any, res: any) => {
   }
 });
 
+router.get('/myCalls', auth, async (req: any, res: any) => {
+  try {
+    const hostRole = await Call.find({
+      hostId: req.query.userId,
+    })
+      .limit(parseInt(req.query.limit))
+      .sort({ createdAt: -1 });
+
+    const guestRole = await Call.find({
+      guestId: req.query.userId,
+    })
+      .sort({ createdAt: -1 })
+      .limit(parseInt(req.query.limit));
+
+    const meets = [...hostRole, ...guestRole];
+
+    res.status(200).json(meets);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

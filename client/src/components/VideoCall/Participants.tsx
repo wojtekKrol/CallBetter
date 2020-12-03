@@ -65,6 +65,7 @@ const Participants = () => {
       audio: true,
     })
     .then((stream: MediaStream) => {
+      console.log(stream.getAudioTracks());
       addVideoStream(refMyVideo.current, stream);
 
       peer.on('call', (call: any) => {
@@ -95,12 +96,14 @@ const Participants = () => {
   return (
     <div className={cx.grid}>
       {' '}
-      <div>
-        <video className={cx.video} ref={refVideo} autoPlay />
-      </div>
-      <div>
-        <video className={cx.video} ref={refMyVideo} autoPlay />
-      </div>
+      {/*<div>*/}
+      {/*  <video className={cx.video} ref={refVideo} autoPlay />*/}
+      {/*  <audio muted />*/}
+      {/*</div>*/}
+      {/*<div>*/}
+      {/*  <video className={cx.video} ref={refMyVideo} autoPlay />*/}
+      {/*  <audio muted />*/}
+      {/*</div>*/}
     </div>
   );
 };

@@ -144,6 +144,12 @@ router.get('/', auth, async (req: any, res: any) => {
   res.json(user);
 });
 
+router.get('/getUserData', auth, async (req: any, res: any) => {
+  const user = await User.findById(req.query.id);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  res.json(user);
+});
+
 router.post('/createProfile', auth, async (req: any, res: any) => {
   try {
     const { name, gender, birthday, about } = req.body;
