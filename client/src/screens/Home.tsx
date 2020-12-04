@@ -13,7 +13,6 @@ import UserContext from '../lib/UserContext';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { green } from '@material-ui/core/colors';
 
 const Home = () => {
   return (
