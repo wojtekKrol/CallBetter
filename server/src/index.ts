@@ -33,11 +33,13 @@ const io = socketIo(server, {
 
 io.on('connection', (socket: any) => {
   socket.on('join-call', (callId: any, userId: any) => {
+    console.log('JOIN-CALL');
     socket.join(callId);
     socket.to(callId).broadcast.emit('user-connected', userId);
 
     socket.on('disconnect', () => {
       socket.to(callId).broadcast.emit('user-disconnected', userId);
+      console.log('disconnect');
     });
   });
 });

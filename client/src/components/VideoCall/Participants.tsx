@@ -31,79 +31,63 @@ const useStyles = makeStyles((theme) => ({
 
 const Participants = () => {
   const cx = useStyles();
-  const peer = new Peer({ host: PEERJS_URL, secure: true, port: 443 });
+  const peer = new Peer(undefined, {
+    host: PEERJS_URL,
+    secure: true,
+    port: 443,
+  });
 
   const params = useParams();
+  // @ts-ignore
+  const callId = params.callId;
   const refMyVideo = useRef<any>();
   const refVideo = useRef<any>();
   const socket = socketIOClient(SERVER_URL);
   const peers: any = {};
 
-  function addVideoStream(video: any, stream: any) {
-    if (video) {
-      video.srcObject = stream;
-      refMyVideo.current.src = video;
-    }
-  }
+  console.group('PEER');
+  console.log('peer', peer);
 
-  function connectToNewUser(userId: string, stream: any) {
-    const call = peer.call(userId, stream);
+  peer.on('open', (id: any) => {
+    console.log('PEER ID', id);
+  });
+  console.groupEnd();
 
-    call.on('stream', (userVideoStream: any) => {
-      addVideoStream(refVideo.current, userVideoStream);
-    });
-    call.on('close', () => {
-      refVideo.current.remove();
-    });
-
-    peers[userId] = call;
-  }
-
+  console.group('RERENDER');
   navigator.mediaDevices
     .getUserMedia({
       video: true,
       audio: true,
     })
     .then((stream: MediaStream) => {
-      console.log(stream.getAudioTracks());
-      addVideoStream(refMyVideo.current, stream);
-
-      peer.on('call', (call: any) => {
-        call.answer(stream);
-
-        call.on('stream', (userVideoStream: any) => {
-          addVideoStream(refVideo.current, userVideoStream);
-        });
-      });
-
       socket.on('user-connected', (userId: string) => {
-        connectToNewUser(userId, stream);
+        console.log(`USER ${userId} CONNECTED`);
+        peers[userId] = userId;
       });
     })
     .catch(console.error);
 
   socket.on('user-disconnected', (userId: string) => {
-    if (peers[userId]) {
-      peers[userId].close();
-    }
+    console.log(`USER ${userId} DISCONNECTED`);
   });
 
-  peer.on('open', (id: string) => {
-    // @ts-ignore
-    socket.emit('join-call', params.callId, id);
+  peer.on('open', (userId: string) => {
+    console.log(`PEER OPEN with ${userId}`);
+    socket.emit('join-call', callId, userId);
   });
+
+  console.groupEnd();
 
   return (
     <div className={cx.grid}>
-      {' '}
-      {/*<div>*/}
-      {/*  <video className={cx.video} ref={refVideo} autoPlay />*/}
-      {/*  <audio muted />*/}
-      {/*</div>*/}
-      {/*<div>*/}
-      {/*  <video className={cx.video} ref={refMyVideo} autoPlay />*/}
-      {/*  <audio muted />*/}
-      {/*</div>*/}
+      <div>
+        <video className={cx.video} ref={refVideo} autoPlay />
+        <audio muted />
+      </div>
+      <div>
+        <video className={cx.video} ref={refMyVideo} autoPlay />
+        <audio muted />
+      </div>
     </div>
   );
 };
