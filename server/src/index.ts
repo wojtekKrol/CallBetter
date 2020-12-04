@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-void */
+//@ts-nocheck
 import chalk from 'chalk';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -25,23 +26,54 @@ server.listen(<number>PORT, () => {
     chalk.blue.bold(`Server is running on http://localhost:${PORT} 🔥`),
   );
 });
+
 // @ts-ignore
 const io = socketIo(server, {
   cors: true,
   origin: PORT,
 });
 
-io.on('connection', (socket: any) => {
-  socket.on('join-call', (callId: any, userId: any) => {
-    console.log('JOIN-CALL');
-    socket.join(callId);
-    socket.to(callId).broadcast.emit('user-connected', userId);
+io.on('connection', socket => {
+  //subscribe to room
+  const subscribe = room => {
+    io.in(room).clients((error, clients) => {
+      if (error) {
+        throw error;
+      }
+      if (clients.length > 2) {
+        socket.emit('session_active');
+        return;
+      }
+      socket.join(room);
+      rooms[room] = { users: [...clients] };
 
-    socket.on('disconnect', () => {
-      socket.to(callId).broadcast.emit('user-disconnected', userId);
-      console.log('disconnect');
+      if (clients.length < 2) {
+        if (clients.length === 1) {
+          socket.emit('create_host');
+        }
+      }
     });
-  });
+  };
+
+  //siganl offer to remote
+  const sendOffer = (room, offer) => {
+    socket.to(room).broadcast.emit('new_offer', offer);
+  };
+
+  //signal answer to remote
+  const sendAnswer = (room, data) => {
+    socket.to(room).broadcast.emit('new_answer', data);
+  };
+
+  //user disconnected
+  const userDisconnected = room => {
+    socket.to(room).broadcast.emit('end');
+  };
+  //events
+  socket.on('subscribe', subscribe);
+  socket.on('offer', sendOffer);
+  socket.on('answer', sendAnswer);
+  socket.on('user_disconnected', userDisconnected);
 });
 
 const { MONGO_URI } = process.env;

@@ -108,7 +108,6 @@ const VideoCall = () => {
   return (
     <Layout>
       <Participants />
-      <Toolbar />
     </Layout>
   );
 };

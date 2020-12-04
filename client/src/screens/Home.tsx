@@ -71,8 +71,25 @@ const CameraPreview = () => {
         },
       );
 
-      enqueueSnackbar('Call room created.', { variant: 'success' });
-      history.push(`/call/${newCall?.data?.id}`);
+      const response = await Axios.post(
+        `${SERVER_URL}call/createRoom`,
+        {
+          roomName: newCall?.data?.id,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+
+      if (response.data.msg === 'created') {
+        enqueueSnackbar('Call room created.', { variant: 'success' });
+        history.push(`/call/${newCall?.data?.id}`);
+      } else if (response.data.msg === 'duplicate') {
+        console.error('Duplicated.');
+      }
     } catch (error) {
       const msg = error.response.data.msg;
       msg && enqueueSnackbar(msg, { variant: 'error' });

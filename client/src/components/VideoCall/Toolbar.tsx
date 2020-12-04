@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
+
 import Controls from './Controls';
 
 const useStyles = makeStyles((theme) => ({
@@ -15,26 +16,36 @@ const useStyles = makeStyles((theme) => ({
       gridTemplateColumns: '1fr',
       gridTemplateAreas: `
         "controls"
-      `
+      `,
     },
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   controls: {
     gridArea: 'controls',
     display: 'flex',
     justifyContent: 'space-around',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 }));
 
-const Toolbar = () => {
+interface ToolbarProps {
+  endCall: () => void;
+  disableAudio: () => void;
+  disableVideo: () => void;
+}
+
+const Toolbar = ({ endCall, disableVideo, disableAudio }: ToolbarProps) => {
   const cx = useStyles();
 
   return (
     <>
       <div className={cx.toolbar}>
         <div className={cx.controls}>
-          <Controls />
+          <Controls
+            disableAudio={disableAudio}
+            disableVideo={disableVideo}
+            endCall={endCall}
+          />
         </div>
       </div>
     </>

@@ -6,13 +6,20 @@ import React, { useState } from 'react';
 
 type Props = {
   className?: string;
+  disableAudio: () => void;
 };
 
-const AudioButton = ({ className }: Props) => {
+const AudioButton = ({ className, disableAudio }: Props) => {
   const [isEnabled, toggleTrack] = useState(true);
+
+  const disable = () => {
+    toggleTrack(!isEnabled);
+    disableAudio();
+  };
+
   return (
     <Tooltip title="Mute" placement="top" PopperProps={{ disablePortal: true }}>
-      <Fab className={className} onClick={() => toggleTrack(!isEnabled)}>
+      <Fab className={className} onClick={() => disable()}>
         {isEnabled ? <MicOn /> : <MicOff color="error" />}
       </Fab>
     </Tooltip>

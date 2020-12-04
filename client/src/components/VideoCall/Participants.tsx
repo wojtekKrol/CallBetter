@@ -1,10 +1,13 @@
+//@ts-nocheck
 import { makeStyles } from '@material-ui/core/styles';
-import Peer from 'peerjs';
-import React, { useRef } from 'react';
+import Axios from 'axios';
+import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import Peer from 'simple-peer';
 import socketIOClient from 'socket.io-client';
 
-import { PEERJS_URL, SERVER_URL } from '../../constants/server';
+import { SERVER_URL } from '../../constants/server';
+import Toolbar from './Toolbar';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -31,63 +34,188 @@ const useStyles = makeStyles((theme) => ({
 
 const Participants = () => {
   const cx = useStyles();
-  const peer = new Peer(undefined, {
-    host: PEERJS_URL,
-    secure: true,
-    port: 443,
-  });
-
   const params = useParams();
   // @ts-ignore
-  const callId = params.callId;
-  const refMyVideo = useRef<any>();
-  const refVideo = useRef<any>();
+  const roomName = params.callId;
+  const client: { gotAnswer: any; peer: any } = { gotAnswer: null, peer: null };
+  const token = localStorage.getItem('auth-token');
+  let localStream: any;
+  const hostStream = useRef(null);
+  const remoteStream = useRef(null);
+  const [roomExists, setRoomExists] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [gotStream, setGotStream] = useState(false);
   const socket = socketIOClient(SERVER_URL);
-  const peers: any = {};
 
-  console.group('PEER');
-  console.log('peer', peer);
+  const getRoomStatus = async () => {
+    try {
+      const response = await Axios.post(
+        `${SERVER_URL}call/room`,
+        { roomName },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+      if (response.data.msg === 'room_exists') {
+        setRoomExists(true);
+        getMedia();
+      } else if (response.data.msg === 'room_does_not_exist') {
+        setRoomExists(false);
+        setModalVisible(true);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
-  peer.on('open', (id: any) => {
-    console.log('PEER ID', id);
+  useEffect(() => {
+    // eslint-disable-next-line no-void
+    void getRoomStatus();
   });
-  console.groupEnd();
 
-  console.group('RERENDER');
-  navigator.mediaDevices
-    .getUserMedia({
-      video: true,
-      audio: true,
-    })
-    .then((stream: MediaStream) => {
-      socket.on('user-connected', (userId: string) => {
-        console.log(`USER ${userId} CONNECTED`);
-        peers[userId] = userId;
+  const getMedia = () => {
+    navigator.getMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
+
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream) => {
+        //set media stream
+        localStream = stream;
+        hostStream.current.srcObject = stream;
+        //subscribe to room
+        socket.emit('subscribe', roomName);
+
+        //peer constructor
+        const initPeer = (type: string) => {
+          const peer = new Peer({
+            initiator: type === 'init',
+            stream: localStream,
+            trickle: false,
+          });
+          peer.on('stream', (stream) => {
+            setGotStream(true);
+            remoteStream.current.srcObject = stream;
+          });
+          return peer;
+        };
+
+        //create initiator
+        const createHost = () => {
+          client.gotAnswer = false;
+          const peer = initPeer('init');
+          peer.on('signal', (data) => {
+            if (!client.gotAnswer) {
+              socket.emit('offer', roomName, data);
+            }
+          });
+          client.peer = peer;
+        };
+
+        //create remote
+        const createRemote = (offer) => {
+          const peer = initPeer('notinit');
+          peer.on('signal', (data) => {
+            socket.emit('answer', roomName, data);
+          });
+          peer.signal(offer);
+          client.peer = peer;
+        };
+
+        //handle answer
+        const handleAnswer = (answer) => {
+          client.gotAnswer = true;
+          const peer = client.peer;
+          peer.signal(answer);
+        };
+
+        const sessionActive = () => {
+          alert('session active');
+        };
+
+        //socket events
+        socket.on('create_host', createHost);
+        socket.on('new_offer', createRemote);
+        socket.on('new_answer', handleAnswer);
+        socket.on('end', end);
+        socket.on('session_active', sessionActive);
+      })
+      .catch((error) => {
+        //error alerts
+        setErrors({
+          msg:
+            'App needs permissions to access media devices to work! Try again.',
+        });
+        setVisible(true);
+        console.log(error);
       });
-    })
-    .catch(console.error);
+  };
 
-  socket.on('user-disconnected', (userId: string) => {
-    console.log(`USER ${userId} DISCONNECTED`);
-  });
+  const endCall = () => {
+    socket.emit('user_disconnected', roomName);
+    end();
+  };
 
-  peer.on('open', (userId: string) => {
-    console.log(`PEER OPEN with ${userId}`);
-    socket.emit('join-call', callId, userId);
-  });
+  //end connection
+  const end = () => {
+    window.location.href = '/';
+  };
 
-  console.groupEnd();
+  //disable video
+  const disableVideo = () => {
+    const videoTracks = localStream.getVideoTracks();
+    for (let i = 0; i < videoTracks.length; ++i) {
+      videoTracks[i].enabled = !videoTracks[i].enabled;
+    }
+  };
+
+  //disable audio
+  const disableAudio = () => {
+    const audioTracks = localStream.getAudioTracks();
+    for (let i = 0; i < audioTracks.length; ++i) {
+      audioTracks[i].enabled = !audioTracks[i].enabled;
+    }
+  };
 
   return (
-    <div className={cx.grid}>
-      <div>
-        <video className={cx.video} ref={refVideo} autoPlay />
-        <audio muted />
+    <div>
+      <div className={cx.grid}>
+        <div>
+          <video
+            className={cx.video}
+            autoPlay
+            muted
+            playsInline
+            ref={hostStream}
+          />
+        </div>
+        <div>
+          <video
+            className={cx.video}
+            autoPlay
+            muted
+            playsInline
+            ref={remoteStream}
+          />
+        </div>
       </div>
-      <div>
-        <video className={cx.video} ref={refMyVideo} autoPlay />
-        <audio muted />
-      </div>
+
+      <Toolbar
+        disableAudio={disableAudio}
+        disableVideo={disableVideo}
+        endCall={endCall}
+      />
     </div>
   );
 };
