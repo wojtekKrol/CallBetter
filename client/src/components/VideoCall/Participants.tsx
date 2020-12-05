@@ -1,10 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles';
-import Peer from 'peerjs';
-import React, { useRef } from 'react';
+import Axios from 'axios';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import Peer from 'simple-peer';
 import socketIOClient from 'socket.io-client';
 
-import { PEERJS_URL, SERVER_URL } from '../../constants/server';
+import { SERVER_URL } from '../../constants/server';
+import Toolbar from './Toolbar';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -29,81 +31,184 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const socket = socketIOClient(SERVER_URL);
+
 const Participants = () => {
   const cx = useStyles();
-  const peer = new Peer({ host: PEERJS_URL, secure: true, port: 443 });
-
   const params = useParams();
-  const refMyVideo = useRef<any>();
-  const refVideo = useRef<any>();
-  const socket = socketIOClient(SERVER_URL);
-  const peers: any = {};
+  // @ts-ignore
+  const roomName = params.callId;
+  const client = useCallback(() => {}, []);
+  const token = localStorage.getItem('auth-token');
+  const localStream: any = useRef<any>();
+  const hostStream = useRef<any>(null);
+  const remoteStream = useRef<any>(null);
+  const [roomExists, setRoomExists] = useState(true);
 
-  function addVideoStream(video: any, stream: any) {
-    if (video) {
-      video.srcObject = stream;
-      refMyVideo.current.src = video;
-    }
-  }
+  const endCall = useCallback(() => {
+    socket.emit('userDisconnected', roomName);
+    end();
+  }, [roomName]);
 
-  function connectToNewUser(userId: string, stream: any) {
-    const call = peer.call(userId, stream);
+  //end connection
+  const end = () => {
+    window.location.href = '/';
+  };
 
-    call.on('stream', (userVideoStream: any) => {
-      addVideoStream(refVideo.current, userVideoStream);
-    });
-    call.on('close', () => {
-      refVideo.current.remove();
-    });
+  const getMedia = useCallback(() => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream: MediaStream) => {
+        //set media stream
+        localStream.current = stream;
+        hostStream.current.srcObject = stream;
+        //subscribe to room
+        socket.emit('subscribe', roomName);
 
-    peers[userId] = call;
-  }
+        //peer constructor
+        const initPeer = (type: string) => {
+          const peer = new Peer({
+            initiator: type === 'init',
+            stream: localStream.current,
+            trickle: false,
+          });
+          peer.on('stream', (stream: any) => {
+            remoteStream.current.srcObject = stream;
+          });
+          return peer;
+        };
 
-  navigator.mediaDevices
-    .getUserMedia({
-      video: true,
-      audio: true,
-    })
-    .then((stream: MediaStream) => {
-      console.log(stream.getAudioTracks());
-      addVideoStream(refMyVideo.current, stream);
+        //create initiator
+        const createHost = () => {
+          // @ts-ignore
+          client.gotAnswer = false;
+          const peer = initPeer('init');
+          peer.on('signal', (data: any) => {
+            // @ts-ignore
+            if (!client.gotAnswer) {
+              socket.emit('offer', roomName, data);
+            }
+          });
+          // @ts-ignore
+          client.peer = peer;
+        };
 
-      peer.on('call', (call: any) => {
-        call.answer(stream);
+        //create remote
+        const createRemote = (offer: any) => {
+          const peer = initPeer('notinit');
+          peer.on('signal', (data: any) => {
+            socket.emit('answer', roomName, data);
+          });
+          peer.signal(offer);
+          // @ts-ignore
+          client.peer = peer;
+        };
 
-        call.on('stream', (userVideoStream: any) => {
-          addVideoStream(refVideo.current, userVideoStream);
-        });
+        //handle answer
+        const handleAnswer = (answer: any) => {
+          // @ts-ignore
+          client.gotAnswer = true;
+          // @ts-ignore
+          const peer = client.peer;
+          peer.signal(answer);
+        };
+
+        const sessionActive = () => {
+          alert('session active');
+        };
+
+        //socket events
+        socket.on('createHost', createHost);
+        socket.on('newOffer', createRemote);
+        socket.on('newAnswer', handleAnswer);
+        socket.on('end', endCall);
+        socket.on('sessionActive', sessionActive);
+      })
+      .catch((error: any) => {
+        console.error(error);
       });
+  }, [client, endCall, roomName]);
 
-      socket.on('user-connected', (userId: string) => {
-        connectToNewUser(userId, stream);
-      });
-    })
-    .catch(console.error);
-
-  socket.on('user-disconnected', (userId: string) => {
-    if (peers[userId]) {
-      peers[userId].close();
+  const getRoomStatus = useCallback(async () => {
+    try {
+      const response = await Axios.post(
+        `${SERVER_URL}call/room`,
+        { roomName },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+      if (response.data.msg === 'room_exists') {
+        setRoomExists(true);
+        getMedia();
+      } else if (response.data.msg === 'room_does_not_exist') {
+        setRoomExists(false);
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
-  });
+  }, [getMedia, roomName, token]);
 
-  peer.on('open', (id: string) => {
-    // @ts-ignore
-    socket.emit('join-call', params.callId, id);
-  });
+  useEffect(() => {
+    // eslint-disable-next-line no-void
+    void getRoomStatus();
+    return console.info('Unmounted');
+  }, [getRoomStatus]);
+
+  //disable video
+  const disableVideo = () => {
+    const videoTracks = localStream.current.getVideoTracks();
+    for (let i = 0; i < videoTracks.length; ++i) {
+      videoTracks[i].enabled = !videoTracks[i].enabled;
+    }
+  };
+
+  //disable audio
+  const disableAudio = () => {
+    const audioTracks = localStream.current.getAudioTracks();
+    for (let i = 0; i < audioTracks.length; ++i) {
+      audioTracks[i].enabled = !audioTracks[i].enabled;
+    }
+  };
 
   return (
-    <div className={cx.grid}>
-      {' '}
-      {/*<div>*/}
-      {/*  <video className={cx.video} ref={refVideo} autoPlay />*/}
-      {/*  <audio muted />*/}
-      {/*</div>*/}
-      {/*<div>*/}
-      {/*  <video className={cx.video} ref={refMyVideo} autoPlay />*/}
-      {/*  <audio muted />*/}
-      {/*</div>*/}
+    <div>
+      {roomExists && (
+        <>
+          <div className={cx.grid}>
+            <div>
+              remote
+              <video
+                ref={remoteStream}
+                className={cx.video}
+                autoPlay
+                playsInline
+              />
+            </div>
+            <div>
+              local
+              <video
+                ref={hostStream}
+                className={cx.video}
+                autoPlay
+                playsInline
+              />
+            </div>
+          </div>
+
+          <Toolbar
+            disableAudio={disableAudio}
+            disableVideo={disableVideo}
+            endCall={endCall}
+          />
+        </>
+      )}
     </div>
   );
 };

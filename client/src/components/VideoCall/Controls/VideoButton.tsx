@@ -6,13 +6,20 @@ import React, { useState } from 'react';
 
 type Props = {
   className?: string;
+  disableVideo: () => void;
 };
 
-const VideoButton = ({ className }: Props) => {
-  const [isEnabled, toggleTrack] = useState(false);
+const VideoButton = ({ className, disableVideo }: Props) => {
+  const [isEnabled, toggleTrack] = useState(true);
+
+  const disable = () => {
+    toggleTrack(!isEnabled);
+    disableVideo();
+  };
+
   return (
     <Tooltip title="Stop Video" placement="top">
-      <Fab className={className} onClick={() => toggleTrack(!isEnabled)}>
+      <Fab className={className} onClick={() => disable()}>
         {isEnabled ? <VideocamOn /> : <VideocamOff color="error" />}
       </Fab>
     </Tooltip>

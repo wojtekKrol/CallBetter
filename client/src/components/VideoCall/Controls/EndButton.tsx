@@ -8,11 +8,13 @@ import { useParams, useHistory } from 'react-router-dom';
 import { CallStatuses } from '../../../api/types/call';
 import { SERVER_URL } from '../../../constants/server';
 import DialogAlert from '../../DialogAlert';
+
 type Props = {
   className?: string;
+  endCall: () => void;
 };
 
-const EndButton = ({ className }: Props) => {
+const EndButton = ({ className, endCall }: Props) => {
   const params = useParams();
   const title = 'Are you sure you want to leave call?';
   const closeText = 'Stay';
@@ -40,6 +42,7 @@ const EndButton = ({ className }: Props) => {
         },
       },
     );
+    endCall();
     history.push('/');
   };
 

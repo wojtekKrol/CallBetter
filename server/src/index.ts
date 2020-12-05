@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
-import socketIo from 'socket.io';
+import socketIo, { Socket } from 'socket.io';
 
 import callsRouter from './routes/callRouter';
 import usersRouter from './routes/userRouter';
@@ -18,6 +18,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const server: http.Server = http.createServer(app);
 server.listen(<number>PORT, () => {
@@ -25,23 +26,56 @@ server.listen(<number>PORT, () => {
     chalk.blue.bold(`Server is running on http://localhost:${PORT} 🔥`),
   );
 });
+
+export const rooms: any = {};
+
 // @ts-ignore
 const io = socketIo(server, {
   cors: true,
   origin: PORT,
 });
 
-io.on('connection', (socket: any) => {
-  socket.on('join-call', (callId: any, userId: any) => {
-    socket.join(callId);
-    socket.to(callId).broadcast.emit('user-connected', userId);
+io.on('connection', (socket: Socket) => {
+  const subscribe = (room: string) => {
+    io.in(room).clients((error: any, clients: any) => {
+      if (error) {
+        throw error;
+      }
+      if (clients.length > 2) {
+        socket.emit('sessionActive');
+        return;
+      }
+      socket.join(room);
+      rooms[room] = { users: [...clients] };
 
-    socket.on('disconnect', () => {
-      socket.to(callId).broadcast.emit('user-disconnected', userId);
+      if (clients.length < 2) {
+        if (clients.length === 1) {
+          return socket.emit('createHost');
+        }
+      }
     });
-  });
+  };
+  //siganl offer to remote
+  const sendOffer = (room: string, offer: any) => {
+    socket.to(room).emit('newOffer', offer);
+  };
+  //signal answer to remote
+  const sendAnswer = (room: string, data: any) => {
+    socket.to(room).broadcast.emit('newAnswer', data);
+  };
+  //user disconnected
+  const userDisconnected = (room: string) => {
+    socket.to(room).broadcast.emit('end');
+  };
+
+  //events
+  socket.on('subscribe', subscribe);
+  socket.on('offer', sendOffer);
+  socket.on('answer', sendAnswer);
+  socket.on('userDisconnected', userDisconnected);
 });
 
+//MONGO
 const { MONGO_URI } = process.env;
 
 mongoose.set('returnOriginal', true);

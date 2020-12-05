@@ -1,12 +1,41 @@
 /* eslint-disable @typescript-eslint/no-misused-promises,consistent-return */
 /* eslint-disable-next-line consistent-return */
-
 import express, { Router } from 'express';
 
+import { rooms } from '../index';
 import auth from '../middlewares/auth';
 import Call from '../models/call';
 
 const router: Router = express.Router();
+
+router.post('/room', auth, (req: any, res: any) => {
+  try {
+    if (rooms[req.body.roomName] === null) {
+      return res.status(400).json({
+        roomName: `${req.body.roomName}`,
+        msg: 'room_does_not_exist',
+      });
+    }
+    res.status(200).json({
+      roomName: `${req.body.roomName}`,
+      msg: 'room_exists',
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+//@route create room
+router.post('/createRoom', auth, (req: any, res: any) => {
+  try {
+    rooms[req.body.roomName] = { users: [] };
+    res.json({
+      roomName: `${req.body.roomName}`,
+      msg: 'created',
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.post(`/createCall`, auth, async (req: any, res: any) => {
   try {
