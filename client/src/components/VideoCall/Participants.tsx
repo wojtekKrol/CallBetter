@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { makeStyles } from '@material-ui/core/styles';
 import Axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react';
@@ -40,8 +39,8 @@ const Participants = () => {
   const client: { gotAnswer: any; peer: any } = { gotAnswer: null, peer: null };
   const token = localStorage.getItem('auth-token');
   let localStream: any;
-  const hostStream = useRef(null);
-  const remoteStream = useRef(null);
+  const hostStream = useRef<any>({});
+  const remoteStream = useRef<any>({});
   const [roomExists, setRoomExists] = useState(true);
   const [errors, setErrors] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
@@ -76,27 +75,26 @@ const Participants = () => {
   useEffect(() => {
     // eslint-disable-next-line no-void
     void getRoomStatus();
+    return console.info('Unmounted');
   });
 
   const getMedia = () => {
+    // @ts-ignore
     navigator.getMedia =
-      navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.msGetUserMedia;
-
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      navigator.getUserMedia;
     navigator.mediaDevices
       .getUserMedia({
         video: true,
         audio: true,
       })
-      .then((stream) => {
+      .then((stream: MediaStream) => {
         //set media stream
         localStream = stream;
         hostStream.current.srcObject = stream;
         //subscribe to room
         socket.emit('subscribe', roomName);
-
+        console.log('CLIENT SUBSCRIBE');
         //peer constructor
         const initPeer = (type: string) => {
           const peer = new Peer({
@@ -113,6 +111,7 @@ const Participants = () => {
 
         //create initiator
         const createHost = () => {
+          console.log('HOST');
           client.gotAnswer = false;
           const peer = initPeer('init');
           peer.on('signal', (data) => {
@@ -124,8 +123,9 @@ const Participants = () => {
         };
 
         //create remote
-        const createRemote = (offer) => {
+        const createRemote = (offer: any) => {
           const peer = initPeer('notinit');
+          console.log('REMOTE');
           peer.on('signal', (data) => {
             socket.emit('answer', roomName, data);
           });
@@ -134,7 +134,7 @@ const Participants = () => {
         };
 
         //handle answer
-        const handleAnswer = (answer) => {
+        const handleAnswer = (answer: any) => {
           client.gotAnswer = true;
           const peer = client.peer;
           peer.signal(answer);
@@ -145,11 +145,11 @@ const Participants = () => {
         };
 
         //socket events
-        socket.on('create_host', createHost);
-        socket.on('new_offer', createRemote);
-        socket.on('new_answer', handleAnswer);
+        socket.on('createHost', createHost);
+        socket.on('newOffer', createRemote);
+        socket.on('newAnswer', handleAnswer);
         socket.on('end', end);
-        socket.on('session_active', sessionActive);
+        socket.on('sessionActive', sessionActive);
       })
       .catch((error) => {
         //error alerts
@@ -158,12 +158,12 @@ const Participants = () => {
             'App needs permissions to access media devices to work! Try again.',
         });
         setVisible(true);
-        console.log(error);
+        console.error(error);
       });
   };
 
   const endCall = () => {
-    socket.emit('user_disconnected', roomName);
+    socket.emit('userDisconnected', roomName);
     end();
   };
 
@@ -197,7 +197,7 @@ const Participants = () => {
             autoPlay
             muted
             playsInline
-            ref={hostStream}
+            ref={remoteStream}
           />
         </div>
         <div>
@@ -206,7 +206,7 @@ const Participants = () => {
             autoPlay
             muted
             playsInline
-            ref={remoteStream}
+            ref={hostStream}
           />
         </div>
       </div>

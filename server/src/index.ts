@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable no-void */
-//@ts-nocheck
 import chalk from 'chalk';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -26,6 +25,7 @@ server.listen(<number>PORT, () => {
     chalk.blue.bold(`Server is running on http://localhost:${PORT} 🔥`),
   );
 });
+export const rooms: any = {};
 
 // @ts-ignore
 const io = socketIo(server, {
@@ -33,47 +33,50 @@ const io = socketIo(server, {
   origin: PORT,
 });
 
-io.on('connection', socket => {
+io.on('connection', (socket: any) => {
   //subscribe to room
-  const subscribe = room => {
-    io.in(room).clients((error, clients) => {
-      if (error) {
-        throw error;
-      }
+  console.log(rooms);
+  const subscribe = (room: any) => {
+    io.in(room).clients((error: any, clients: any) => {
       if (clients.length > 2) {
-        socket.emit('session_active');
+        socket.emit('sessionActive');
         return;
       }
+      console.log('clients.length', clients.length);
       socket.join(room);
       rooms[room] = { users: [...clients] };
-
+      console.log(rooms[room]);
       if (clients.length < 2) {
-        if (clients.length === 1) {
-          socket.emit('create_host');
+        if (clients.length === 0) {
+          socket.emit('createHost');
+          console.log('create Host');
         }
       }
     });
   };
 
   //siganl offer to remote
-  const sendOffer = (room, offer) => {
-    socket.to(room).broadcast.emit('new_offer', offer);
+  const sendOffer = (room: string, offer: any) => {
+    console.log('SEND OFFER');
+    socket.to(room).broadcast.emit('newOffer', offer);
   };
 
   //signal answer to remote
-  const sendAnswer = (room, data) => {
-    socket.to(room).broadcast.emit('new_answer', data);
+  const sendAnswer = (room: string, data: any) => {
+    console.log('SEND ANSWER');
+    socket.to(room).broadcast.emit('newAnswer', data);
   };
 
   //user disconnected
-  const userDisconnected = room => {
+  const userDisconnected = (room: string) => {
+    console.log('USER DISCONECTED');
     socket.to(room).broadcast.emit('end');
   };
   //events
   socket.on('subscribe', subscribe);
   socket.on('offer', sendOffer);
   socket.on('answer', sendAnswer);
-  socket.on('user_disconnected', userDisconnected);
+  socket.on('userDisconnected', userDisconnected);
 });
 
 const { MONGO_URI } = process.env;

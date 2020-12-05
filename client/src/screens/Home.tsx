@@ -88,7 +88,7 @@ const CameraPreview = () => {
         enqueueSnackbar('Call room created.', { variant: 'success' });
         history.push(`/call/${newCall?.data?.id}`);
       } else if (response.data.msg === 'duplicate') {
-        console.error('Duplicated.');
+        enqueueSnackbar(response.data.msg, { variant: 'error' });
       }
     } catch (error) {
       const msg = error.response.data.msg;
