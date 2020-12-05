@@ -10,11 +10,13 @@ const userSchema = new Schema(
       unique: true,
       trim: true,
     },
+    // @ts-ignore
     password: {
       type: String,
       // @ts-ignore
       hide: true,
     },
+    // @ts-ignore
     passwordCheck: {
       type: String,
       // @ts-ignore
