@@ -48,14 +48,8 @@ io.on('connection', (socket: Socket) => {
       socket.join(room);
       rooms[room] = { users: [...clients] };
 
-      console.group('ROOM INFO');
-      console.log('ROOM', room);
-      console.log('USERS', rooms[room]);
-      console.groupEnd();
-
       if (clients.length < 2) {
         if (clients.length === 1) {
-          console.log('HOST CREATED');
           return socket.emit('createHost');
         }
       }

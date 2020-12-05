@@ -38,12 +38,22 @@ const Participants = () => {
   const params = useParams();
   // @ts-ignore
   const roomName = params.callId;
-  const client: any = {};
+  const client = useCallback(() => {}, []);
   const token = localStorage.getItem('auth-token');
   const localStream: any = useRef<any>();
   const hostStream = useRef<any>(null);
   const remoteStream = useRef<any>(null);
   const [roomExists, setRoomExists] = useState(true);
+
+  const endCall = useCallback(() => {
+    socket.emit('userDisconnected', roomName);
+    end();
+  }, [roomName]);
+
+  //end connection
+  const end = () => {
+    window.location.href = '/';
+  };
 
   const getMedia = useCallback(() => {
     navigator.mediaDevices
@@ -60,7 +70,6 @@ const Participants = () => {
 
         //peer constructor
         const initPeer = (type: string) => {
-          console.log('PEER INIT');
           const peer = new Peer({
             initiator: type === 'init',
             stream: localStream.current,
@@ -74,24 +83,23 @@ const Participants = () => {
 
         //create initiator
         const createHost = () => {
-          console.log('HOST CREATED');
           // @ts-ignore
           client.gotAnswer = false;
           const peer = initPeer('init');
-          peer.on('signal', (data) => {
+          peer.on('signal', (data: any) => {
             // @ts-ignore
             if (!client.gotAnswer) {
               socket.emit('offer', roomName, data);
             }
           });
+          // @ts-ignore
           client.peer = peer;
         };
 
         //create remote
         const createRemote = (offer: any) => {
-          console.log('REMOTE CREATED');
           const peer = initPeer('notinit');
-          peer.on('signal', (data) => {
+          peer.on('signal', (data: any) => {
             socket.emit('answer', roomName, data);
           });
           peer.signal(offer);
@@ -122,7 +130,7 @@ const Participants = () => {
       .catch((error: any) => {
         console.error(error);
       });
-  }, []);
+  }, [client, endCall, roomName]);
 
   const getRoomStatus = useCallback(async () => {
     try {
@@ -153,18 +161,6 @@ const Participants = () => {
     return console.info('Unmounted');
   }, [getRoomStatus]);
 
-  //get access to media devices
-
-  const endCall = () => {
-    socket.emit('userDisconnected', roomName);
-    end();
-  };
-
-  //end connection
-  const end = () => {
-    window.location.href = '/';
-  };
-
   //disable video
   const disableVideo = () => {
     const videoTracks = localStream.current.getVideoTracks();
@@ -192,7 +188,6 @@ const Participants = () => {
                 ref={remoteStream}
                 className={cx.video}
                 autoPlay
-                muted
                 playsInline
               />
             </div>
@@ -202,7 +197,6 @@ const Participants = () => {
                 ref={hostStream}
                 className={cx.video}
                 autoPlay
-                muted
                 playsInline
               />
             </div>
