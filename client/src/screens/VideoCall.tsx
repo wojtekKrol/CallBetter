@@ -6,7 +6,6 @@ import { useParams, useHistory } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Loading from '../components/Loading';
 import Participants from '../components/VideoCall/Participants';
-import Toolbar from '../components/VideoCall/Toolbar';
 import { SERVER_URL } from '../constants/server';
 import UserContext from '../lib/UserContext';
 
@@ -55,7 +54,7 @@ const VideoCall = () => {
     // eslint-disable-next-line no-void
     void getCallDetails();
 
-    return () => console.log('VIDEO CALL Unmounted');
+    return () => console.info('VIDEO CALL Unmounted');
   }, [callId, token, enqueueSnackbar, history]);
 
   useEffect(() => {
@@ -85,7 +84,7 @@ const VideoCall = () => {
       };
       // eslint-disable-next-line no-void
       void tryUpdateCall();
-      return () => console.log('VIDEO CALL Unmounted');
+      return () => console.info('VIDEO CALL Unmounted');
     }
   }, [
     callData,

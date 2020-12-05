@@ -27,14 +27,6 @@ router.post('/room', auth, (req: any, res: any) => {
 //@route create room
 router.post('/createRoom', auth, (req: any, res: any) => {
   try {
-    if (rooms[req.body.roomName] != null) {
-      return res.status(400).json({
-        data: {
-          roomName: `${req.body.roomName}`,
-          msg: 'duplicate',
-        },
-      });
-    }
     rooms[req.body.roomName] = { users: [] };
     res.json({
       roomName: `${req.body.roomName}`,
