@@ -11,7 +11,7 @@ const router: Router = express.Router();
 router.post('/room', auth, (req: any, res: any) => {
   try {
     if (rooms[req.body.roomName] === null) {
-      return res.status(200).json({
+      return res.status(400).json({
         roomName: `${req.body.roomName}`,
         msg: 'room_does_not_exist',
       });
@@ -27,14 +27,14 @@ router.post('/room', auth, (req: any, res: any) => {
 //@route create room
 router.post('/createRoom', auth, (req: any, res: any) => {
   try {
-    // if (rooms[req.body.roomName] !== null) {
-    //   return res.status(400).json({
-    //     data: {
-    //       roomName: `${req.body.roomName}`,
-    //       msg: 'duplicate',
-    //     },
-    //   });
-    // }
+    if (rooms[req.body.roomName] != null) {
+      return res.status(400).json({
+        data: {
+          roomName: `${req.body.roomName}`,
+          msg: 'duplicate',
+        },
+      });
+    }
     rooms[req.body.roomName] = { users: [] };
     res.json({
       roomName: `${req.body.roomName}`,

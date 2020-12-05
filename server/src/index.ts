@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
-import socketIo from 'socket.io';
+import socketIo, { Socket } from 'socket.io';
 
 import callsRouter from './routes/callRouter';
 import usersRouter from './routes/userRouter';
@@ -18,6 +18,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const server: http.Server = http.createServer(app);
 server.listen(<number>PORT, () => {
@@ -25,6 +26,7 @@ server.listen(<number>PORT, () => {
     chalk.blue.bold(`Server is running on http://localhost:${PORT} 🔥`),
   );
 });
+
 export const rooms: any = {};
 
 // @ts-ignore
@@ -33,45 +35,49 @@ const io = socketIo(server, {
   origin: PORT,
 });
 
-io.on('connection', (socket: any) => {
+io.on('connection',  (socket: Socket) => {
   //subscribe to room
   console.log(rooms);
-  const subscribe = (room: any) => {
+  console.log(Object.keys(rooms));
+  
+  const subscribe = (room: string) => {
     io.in(room).clients((error: any, clients: any) => {
+      if (error) {
+        throw error;
+      }
       if (clients.length > 2) {
         socket.emit('sessionActive');
         return;
       }
-      console.log('clients.length', clients.length);
       socket.join(room);
       rooms[room] = { users: [...clients] };
-      console.log(rooms[room]);
+
+      console.group('ROOM INFO');
+      console.log('ROOM', room);
+      console.log('USERS', rooms[room]);
+      console.groupEnd();
+
       if (clients.length < 2) {
-        if (clients.length === 0) {
-          socket.emit('createHost');
-          console.log('create Host');
+        if (clients.length === 1) {
+          console.log('HOST CREATED');
+          return socket.emit('createHost');
         }
       }
     });
   };
-
   //siganl offer to remote
   const sendOffer = (room: string, offer: any) => {
-    console.log('SEND OFFER');
-    socket.to(room).broadcast.emit('newOffer', offer);
+    socket.to(room).emit('newOffer', offer);
   };
-
   //signal answer to remote
   const sendAnswer = (room: string, data: any) => {
-    console.log('SEND ANSWER');
     socket.to(room).broadcast.emit('newAnswer', data);
   };
-
   //user disconnected
   const userDisconnected = (room: string) => {
-    console.log('USER DISCONECTED');
     socket.to(room).broadcast.emit('end');
   };
+
   //events
   socket.on('subscribe', subscribe);
   socket.on('offer', sendOffer);
@@ -79,6 +85,7 @@ io.on('connection', (socket: any) => {
   socket.on('userDisconnected', userDisconnected);
 });
 
+//MONGO
 const { MONGO_URI } = process.env;
 
 mongoose.set('returnOriginal', true);

@@ -36,16 +36,12 @@ const Participants = () => {
   const params = useParams();
   // @ts-ignore
   const roomName = params.callId;
-  const client: { gotAnswer: any; peer: any } = { gotAnswer: null, peer: null };
+  const client: any = {};
   const token = localStorage.getItem('auth-token');
   let localStream: any;
-  const hostStream = useRef<any>({});
-  const remoteStream = useRef<any>({});
+  const hostStream = useRef<any>(null);
+  const remoteStream = useRef<any>(null);
   const [roomExists, setRoomExists] = useState(true);
-  const [errors, setErrors] = useState({});
-  const [modalVisible, setModalVisible] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [gotStream, setGotStream] = useState(false);
   const socket = socketIOClient(SERVER_URL);
 
   const getRoomStatus = async () => {
@@ -65,7 +61,6 @@ const Participants = () => {
         getMedia();
       } else if (response.data.msg === 'room_does_not_exist') {
         setRoomExists(false);
-        setModalVisible(true);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -78,11 +73,18 @@ const Participants = () => {
     return console.info('Unmounted');
   });
 
+  //get access to media devices
   const getMedia = () => {
     // @ts-ignore
     navigator.getMedia =
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      navigator.getUserMedia;
+      navigator.getUserMedia ||
+      // @ts-ignore
+      navigator.webkitGetUserMedia ||
+      // @ts-ignore
+      navigator.mozGetUserMedia ||
+      // @ts-ignore
+      navigator.msGetUserMedia;
     navigator.mediaDevices
       .getUserMedia({
         video: true,
@@ -94,16 +96,16 @@ const Participants = () => {
         hostStream.current.srcObject = stream;
         //subscribe to room
         socket.emit('subscribe', roomName);
-        console.log('CLIENT SUBSCRIBE');
+
         //peer constructor
         const initPeer = (type: string) => {
+          console.log('PEER INIT');
           const peer = new Peer({
             initiator: type === 'init',
             stream: localStream,
             trickle: false,
           });
-          peer.on('stream', (stream) => {
-            setGotStream(true);
+          peer.on('stream', (stream: any) => {
             remoteStream.current.srcObject = stream;
           });
           return peer;
@@ -111,10 +113,12 @@ const Participants = () => {
 
         //create initiator
         const createHost = () => {
-          console.log('HOST');
+          console.log('HOST CREATED');
+          // @ts-ignore
           client.gotAnswer = false;
           const peer = initPeer('init');
           peer.on('signal', (data) => {
+            // @ts-ignore
             if (!client.gotAnswer) {
               socket.emit('offer', roomName, data);
             }
@@ -124,18 +128,21 @@ const Participants = () => {
 
         //create remote
         const createRemote = (offer: any) => {
+          console.log('REMOTE CREATED');
           const peer = initPeer('notinit');
-          console.log('REMOTE');
           peer.on('signal', (data) => {
             socket.emit('answer', roomName, data);
           });
           peer.signal(offer);
+          // @ts-ignore
           client.peer = peer;
         };
 
         //handle answer
         const handleAnswer = (answer: any) => {
+          // @ts-ignore
           client.gotAnswer = true;
+          // @ts-ignore
           const peer = client.peer;
           peer.signal(answer);
         };
@@ -148,16 +155,10 @@ const Participants = () => {
         socket.on('createHost', createHost);
         socket.on('newOffer', createRemote);
         socket.on('newAnswer', handleAnswer);
-        socket.on('end', end);
+        socket.on('end', endCall);
         socket.on('sessionActive', sessionActive);
       })
       .catch((error) => {
-        //error alerts
-        setErrors({
-          msg:
-            'App needs permissions to access media devices to work! Try again.',
-        });
-        setVisible(true);
         console.error(error);
       });
   };
@@ -190,32 +191,38 @@ const Participants = () => {
 
   return (
     <div>
-      <div className={cx.grid}>
-        <div>
-          <video
-            className={cx.video}
-            autoPlay
-            muted
-            playsInline
-            ref={remoteStream}
-          />
-        </div>
-        <div>
-          <video
-            className={cx.video}
-            autoPlay
-            muted
-            playsInline
-            ref={hostStream}
-          />
-        </div>
-      </div>
+      {roomExists && (
+        <>
+          <div className={cx.grid}>
+            <div>
+              remote
+              <video
+                ref={remoteStream}
+                className={cx.video}
+                autoPlay
+                muted
+                playsInline
+              />
+            </div>
+            <div>
+              local
+              <video
+                ref={hostStream}
+                className={cx.video}
+                autoPlay
+                muted
+                playsInline
+              />
+            </div>
+          </div>
 
-      <Toolbar
-        disableAudio={disableAudio}
-        disableVideo={disableVideo}
-        endCall={endCall}
-      />
+          <Toolbar
+            disableAudio={disableAudio}
+            disableVideo={disableVideo}
+            endCall={endCall}
+          />
+        </>
+      )}
     </div>
   );
 };

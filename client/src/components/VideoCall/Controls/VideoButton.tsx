@@ -10,7 +10,7 @@ type Props = {
 };
 
 const VideoButton = ({ className, disableVideo }: Props) => {
-  const [isEnabled, toggleTrack] = useState(false);
+  const [isEnabled, toggleTrack] = useState(true);
 
   const disable = () => {
     toggleTrack(!isEnabled);

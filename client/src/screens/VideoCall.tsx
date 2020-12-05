@@ -55,7 +55,7 @@ const VideoCall = () => {
     // eslint-disable-next-line no-void
     void getCallDetails();
 
-    return () => console.log('Unmounted');
+    return () => console.log('VIDEO CALL Unmounted');
   }, [callId, token, enqueueSnackbar, history]);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const VideoCall = () => {
       };
       // eslint-disable-next-line no-void
       void tryUpdateCall();
-      return () => console.log('Unmounted');
+      return () => console.log('VIDEO CALL Unmounted');
     }
   }, [
     callData,
