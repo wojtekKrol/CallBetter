@@ -40,22 +40,12 @@ const Participants = () => {
   const roomName = params.callId;
   const client: any = {};
   const token = localStorage.getItem('auth-token');
-  let localStream: any;
+  const localStream: any = useRef<any>();
   const hostStream = useRef<any>(null);
   const remoteStream = useRef<any>(null);
   const [roomExists, setRoomExists] = useState(true);
 
   const getMedia = useCallback(() => {
-    // @ts-ignore
-    navigator.getMedia =
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      navigator.getUserMedia ||
-      // @ts-ignore
-      navigator.webkitGetUserMedia ||
-      // @ts-ignore
-      navigator.mozGetUserMedia ||
-      // @ts-ignore
-      navigator.msGetUserMedia;
     navigator.mediaDevices
       .getUserMedia({
         video: true,
@@ -63,7 +53,7 @@ const Participants = () => {
       })
       .then((stream: MediaStream) => {
         //set media stream
-        localStream = stream;
+        localStream.current = stream;
         hostStream.current.srcObject = stream;
         //subscribe to room
         socket.emit('subscribe', roomName);
@@ -73,7 +63,7 @@ const Participants = () => {
           console.log('PEER INIT');
           const peer = new Peer({
             initiator: type === 'init',
-            stream: localStream,
+            stream: localStream.current,
             trickle: false,
           });
           peer.on('stream', (stream: any) => {
@@ -177,7 +167,7 @@ const Participants = () => {
 
   //disable video
   const disableVideo = () => {
-    const videoTracks = localStream.getVideoTracks();
+    const videoTracks = localStream.current.getVideoTracks();
     for (let i = 0; i < videoTracks.length; ++i) {
       videoTracks[i].enabled = !videoTracks[i].enabled;
     }
@@ -185,7 +175,7 @@ const Participants = () => {
 
   //disable audio
   const disableAudio = () => {
-    const audioTracks = localStream.getAudioTracks();
+    const audioTracks = localStream.current.getAudioTracks();
     for (let i = 0; i < audioTracks.length; ++i) {
       audioTracks[i].enabled = !audioTracks[i].enabled;
     }
