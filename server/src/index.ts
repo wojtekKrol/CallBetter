@@ -35,11 +35,11 @@ const io = socketIo(server, {
   origin: PORT,
 });
 
-io.on('connection',  (socket: Socket) => {
+io.on('connection', (socket: Socket) => {
   //subscribe to room
   console.log(rooms);
   console.log(Object.keys(rooms));
-  
+
   const subscribe = (room: string) => {
     io.in(room).clients((error: any, clients: any) => {
       if (error) {

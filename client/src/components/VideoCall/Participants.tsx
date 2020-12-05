@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Axios from 'axios';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import Peer from 'simple-peer';
 import socketIOClient from 'socket.io-client';
@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const socket = socketIOClient(SERVER_URL);
+
 const Participants = () => {
   const cx = useStyles();
   const params = useParams();
@@ -42,39 +44,8 @@ const Participants = () => {
   const hostStream = useRef<any>(null);
   const remoteStream = useRef<any>(null);
   const [roomExists, setRoomExists] = useState(true);
-  const socket = socketIOClient(SERVER_URL);
 
-  const getRoomStatus = async () => {
-    try {
-      const response = await Axios.post(
-        `${SERVER_URL}call/room`,
-        { roomName },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-        },
-      );
-      if (response.data.msg === 'room_exists') {
-        setRoomExists(true);
-        getMedia();
-      } else if (response.data.msg === 'room_does_not_exist') {
-        setRoomExists(false);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  useEffect(() => {
-    // eslint-disable-next-line no-void
-    void getRoomStatus();
-    return console.info('Unmounted');
-  });
-
-  //get access to media devices
-  const getMedia = () => {
+  const getMedia = useCallback(() => {
     // @ts-ignore
     navigator.getMedia =
       // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -158,10 +129,41 @@ const Participants = () => {
         socket.on('end', endCall);
         socket.on('sessionActive', sessionActive);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error(error);
       });
-  };
+  }, []);
+
+  const getRoomStatus = useCallback(async () => {
+    try {
+      const response = await Axios.post(
+        `${SERVER_URL}call/room`,
+        { roomName },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+      if (response.data.msg === 'room_exists') {
+        setRoomExists(true);
+        getMedia();
+      } else if (response.data.msg === 'room_does_not_exist') {
+        setRoomExists(false);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }, [getMedia, roomName, token]);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-void
+    void getRoomStatus();
+    return console.info('Unmounted');
+  }, [getRoomStatus]);
+
+  //get access to media devices
 
   const endCall = () => {
     socket.emit('userDisconnected', roomName);
