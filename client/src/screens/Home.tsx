@@ -1,6 +1,13 @@
+//@ts-nocheck
 import Axios from 'axios';
 import { useSnackbar } from 'notistack';
-import React, { useContext, useState, useEffect } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -95,10 +102,40 @@ const CameraPreview = () => {
       msg && enqueueSnackbar(msg, { variant: 'error' });
     }
   };
+  const hostStream = useRef<any>(null);
+  const getMedia = useCallback(() => {
+    navigator.getMedia =
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream: MediaStream) => {
+        hostStream.current.srcObject = stream;
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    getMedia();
+  }, []);
 
   return (
     <div className="videoWrapper">
-      <video autoPlay playsInline />
+      <video
+        ref={hostStream}
+        autoPlay
+        playsInline
+        muted
+        className="videoItself"
+      />
       <div className="videoButtonWrapper">
         <button className="videoCreateRoom" onClick={createCall}>
           Create room
