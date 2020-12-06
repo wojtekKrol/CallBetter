@@ -125,7 +125,7 @@ const CameraPreview = () => {
 
   useEffect(() => {
     getMedia();
-  }, []);
+  }, [getMedia]);
 
   return (
     <div className="videoWrapper">
