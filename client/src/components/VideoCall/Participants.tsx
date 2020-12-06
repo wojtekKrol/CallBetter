@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { makeStyles } from '@material-ui/core/styles';
 import Axios from 'axios';
 import React, { useRef, useState, useEffect, useCallback } from 'react';
@@ -47,7 +48,6 @@ const Participants = () => {
 
   const endCall = useCallback(() => {
     socket.emit('userDisconnected', roomName);
-    end();
   }, [roomName]);
 
   //end connection
@@ -56,6 +56,12 @@ const Participants = () => {
   };
 
   const getMedia = useCallback(() => {
+    navigator.getMedia =
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
     navigator.mediaDevices
       .getUserMedia({
         video: true,
@@ -124,7 +130,7 @@ const Participants = () => {
         socket.on('createHost', createHost);
         socket.on('newOffer', createRemote);
         socket.on('newAnswer', handleAnswer);
-        socket.on('end', endCall);
+        socket.on('end', end);
         socket.on('sessionActive', sessionActive);
       })
       .catch((error: any) => {
@@ -183,7 +189,6 @@ const Participants = () => {
         <>
           <div className={cx.grid}>
             <div>
-              remote
               <video
                 ref={remoteStream}
                 className={cx.video}
@@ -192,12 +197,12 @@ const Participants = () => {
               />
             </div>
             <div>
-              local
               <video
                 ref={hostStream}
                 className={cx.video}
                 autoPlay
                 playsInline
+                muted
               />
             </div>
           </div>
