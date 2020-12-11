@@ -1,10 +1,30 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
+   "compilerOptions": {
+     "target": "es5",
+     "downlevelIteration": true,
+     "lib": [
+       "dom",
+       "dom.iterable",
+       "esnext"
+     ],
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "allowUmdGlobalAccess": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "moduleResolution": "node",
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "useDefineForClassFields": true
   },
   "include": [
     "src"

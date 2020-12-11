@@ -20,6 +20,13 @@ services:
       local:
         aliases:
           - mongo
+  react:
+    build: ./client
+    ports:
+      - "3000:80"
+    networks:
+      local:
+
 
 
 networks:

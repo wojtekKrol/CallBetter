@@ -2,11 +2,12 @@ ARG NODE=12-alpine
 
 FROM node:$NODE AS nodeDeps
 WORKDIR /app
+ENV HUSKY_SKIP_INSTALL=1
 
 COPY package.json yarn.lock tsconfig.json  ./
 COPY server ./server
 
-RUN yarn install --pure-lockfile
+RUN yarn install
 RUN yarn workspace server build
 
 FROM node:$NODE
