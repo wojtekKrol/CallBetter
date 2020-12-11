@@ -8,7 +8,7 @@ COPY package.json yarn.lock tsconfig.json  ./
 COPY client ./client
 
 RUN yarn install
-RUN yarn workspace client build
+RUN yarn workspace client buildgit
 
 FROM nginx:1.17.1-alpine
 RUN \

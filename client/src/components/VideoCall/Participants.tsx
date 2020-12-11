@@ -136,7 +136,7 @@ const Participants = () => {
       .catch((error: any) => {
         console.error(error);
       });
-  }, [client, endCall, roomName]);
+  }, [client, roomName]);
 
   const getRoomStatus = useCallback(async () => {
     try {
