@@ -16,6 +16,5 @@ RUN \
     apk add tini
 WORKDIR ./app
 
-COPY --from=nodeDeps ./app/node_modules ./node_modules
 COPY --from=nodeDeps /app/client/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=nodeDeps /app/client/build /usr/share/nginx/html
