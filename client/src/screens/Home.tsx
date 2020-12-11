@@ -181,7 +181,7 @@ const HitoryPreview = () => {
   const [calls, setCalls] = useState<any>([]);
   const user = useContext(UserContext);
   const token = localStorage.getItem('auth-token');
-  const userId = user.user.userData.id;
+  const userId = user?.user?.userData?.id ?? null;
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     const getHistoryCalls = async () => {
