@@ -41,6 +41,6 @@
     "tsc": "tsc",
     "config": "ts-node set-env.ts",
     "start": "node build/index.js",
-    "build": "yarn run config && ncc build src/index.ts -o build"
+    "build": "ncc build src/index.ts -o build"
   }
 }
