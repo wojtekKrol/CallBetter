@@ -4,7 +4,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.server
     ports:
     - "5000:5000"
     networks:
@@ -21,7 +21,9 @@ services:
         aliases:
           - mongo
   react:
-    build: ./client
+    build:
+      context: .
+      dockerfile: Dockerfile.client
     ports:
       - "3000:80"
     networks:
